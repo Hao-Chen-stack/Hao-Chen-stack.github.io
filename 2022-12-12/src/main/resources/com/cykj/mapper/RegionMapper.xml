@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.RegionMapper">
+    <!--
+        id:唯一标识
+        resultType:返回值类型
+        标签中写sql语句
+
+        查询
+    -->
+    <select id="findRegionList" resultType="com.cykj.bean.Tblregion">
+        select * from tblregion
+    </select>
+
+    <!--concat函数：拼接
+        #{}:占位，预防注入
+        ${}：有注入的风险，当把表名或者表中的字段名当做参数的时候用
+      -->
+
+    <!--插入
+    -获取自增主键：useGeneratedKeys="true" keyProperty="主键字段"-->
+    <insert id="addRegion" useGeneratedKeys="true" keyProperty="regionId">
+        insert into tblregion values(null,#{regionName},#{parentId},#{regionStatus})
+    </insert>
+
+    <!--删除-->
+    <delete id="delRegion">
+        delete from tblregion where regionId=#{regionId}
+    </delete>
+
+    <!--修改-->
+    <update id="updateRegion">
+        update tblregion set regionName=#{regionName},parentId=#{parentId},regionStatus=#{regionStatus} where regionId=#{regionId}
+    </update>
+
+
+</mapper>

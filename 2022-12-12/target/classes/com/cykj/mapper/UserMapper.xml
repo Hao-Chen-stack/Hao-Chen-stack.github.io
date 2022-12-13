@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.UserMapper">
+    <!--
+        id:唯一标识
+        resultType:返回值类型
+        标签中写sql语句
+
+        查询
+    -->
+    <select id="findUserList" resultType="com.cykj.bean.Tbluser">
+        select * from tbluser
+    </select>
+
+    <!--concat函数：拼接
+        #{}:占位，预防注入
+        ${}：有注入的风险，当把表名或者表中的字段名当做参数的时候用
+      -->
+
+    <!--插入
+    -获取自增主键：useGeneratedKeys="true" keyProperty="主键字段"-->
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="userId">
+        insert into tbluser(userAcc,userPwd,userSex,userStatus,userPhone,createTime) values(#{userAcc},#{userPwd},#{userSex},#{userStatus},#{userPhone},now())
+    </insert>
+
+    <!--删除-->
+    <delete id="delUser">
+        delete from tbluser where userId=#{userId}
+    </delete>
+
+    <!--修改-->
+    <update id="updateUser">
+        update tbluser set userAcc=#{userAcc},userPwd=#{userPwd},userSex=#{userSex},userStatus=#{userStatus},userPhone=#{userPhone} where userId=#{userId}
+    </update>
+
+    <!--一对多，查询嵌套-->
+    <select id="findUserAddress" resultMap="userAddrMap">
+        select * from tbluser where userId=#{userId}
+    </select>
+    <select id="findAddress" resultType="com.cykj.bean.Tbladdress">
+        select * from tbladdress where userId=#{userId}
+    </select>
+    <resultMap id="userAddrMap" type="com.cykj.bean.Tbluser">
+        <collection property="tbladdresses" column="userId" select="findAddress" ofType="com.cykj.bean.Tbladdress"></collection>
+    </resultMap>
+    
+    <!--一对多，嵌套查询用户收藏夹列表-->
+    <select id="findUserCollection" resultMap="userCollMap">
+        select * from tbluser where userId=#{userId}
+    </select>
+    <select id="findCollection" resultType="com.cykj.bean.Tblcollection">
+        select * from tblcollection where userId=#{userId}
+    </select>
+    <resultMap id="userCollMap" type="com.cykj.bean.Tbluser">
+        <collection property="tblcollections" column="userId" select="findCollection" ofType="com.cykj.bean.Tblcollection"></collection>
+    </resultMap>
+</mapper>

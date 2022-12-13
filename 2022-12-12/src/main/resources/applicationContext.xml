@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--
+   bean：代表一个对象
+   id：对象的唯一标识
+   class：类的完全限定名（包路径+类名）
+   property：属性
+       name：属性名称
+       value：属性值
+   默认单例
+   多例：scope="prototype"
+       -->
+    <bean id="address1" class="com.cykj.bean.Tbladdress" scope="prototype">
+        <property name="houseAddr" value="莲前街道望海路25号"></property>
+    </bean>
+<!--    <bean id="address2" class="com.cykj.bean.Tbladdress">-->
+<!--        <property name="houseAddr" value="莲前街道望海路26号"></property>-->
+<!--    </bean>-->
+    <bean id="role" class="com.cykj.bean.Tblrole">
+        <property name="roleName" value="管理员"></property>
+    </bean>
+
+    <bean id="manager" class="com.cykj.bean.Tblmanager">
+        <property name="managerAcc" value="zhangsan"></property>
+        <!--引用类型注入-->
+        <property name="tblrole" ref="role"></property>
+    </bean>
+
+    <!--构造器注入
+        前提：实体类中有对应的构造器
+    -->
+    <bean id="user" class="com.cykj.bean.Tblrole">
+        <!--根据name给构造器赋值-->
+        <constructor-arg name="roleId" value="1"></constructor-arg>
+        <constructor-arg name="roleName" value="超管"></constructor-arg>
+        <!--根据index给构造器赋值-->
+<!--        <constructor-arg index="0" value="2"></constructor-arg>-->
+<!--        <constructor-arg index="1" value="普通管理员"></constructor-arg>-->
+    </bean>
+
+    <!--引用类型的自动注入：
+    byname:通过bean的id属性来自动注入，如果找不到对应的id不会报错，但是也不会注入
+    bytype
+    -->
+    <bean id="manager2" class="com.cykj.bean.Tblmanager" autowire="byName">
+        <property name="managerAcc" value="zhangsan"></property>
+        <!--引用类型的自动注入：这句可以省略-->
+<!--        <property name="tblrole" ref="role"></property>-->
+    </bean>
+
+    <bean id="manager3" class="com.cykj.bean.Tblmanager" >
+        <property name="managerAcc" value="zhangsan"></property>
+        <!--引用类型的自动注入：这句可以省略-->
+        <!--        <property name="tblrole" ref="role"></property>-->
+    </bean>
+
+    <bean id="tblrole" class="com.cykj.bean.Tblrole">
+        <property name="roleName" value="管理员"></property>
+    </bean>
+</beans>

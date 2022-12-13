@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TblmanagerMapper">
+    <!--
+        id:唯一标识
+        resultType:返回值类型
+        标签中写sql语句
+    -->
+    <select id="findManagerList" resultType="com.cykj.bean.Tblmanager">
+        select * from tblmanager
+    </select>
+
+    <!--concat函数：拼接
+        #{}:占位，预防注入
+        ${}：有注入的风险，当把表名或者表中的字段名当做参数的时候用
+      -->
+    <select id="findManagerListByName" resultType="com.cykj.bean.Tblmanager">
+        select * from tblmanager where realName like concat('%',#{realName},'%')
+    </select>
+
+    <!--获取自增主键：useGeneratedKeys="true" keyProperty="managerId"-->
+    <insert id="addManager" useGeneratedKeys="true" keyProperty="managerId">
+        insert into tblmanager values(null,#{roleId},#{managerAcc},#{managerPwd},#{realName},#{managerStatus})
+    </insert>
+
+    <delete id="delManager">
+        delete from tblmanager where managerId=#{managerId}
+    </delete>
+
+    <update id="updateManager">
+        update tblmanager set realName=#{realName} where managerId=#{managerId}
+    </update>
+
+    <!--关联映射：一对一
+         1.嵌套查询
+         主表的返回类型改成：resultMap
+     -->
+    <select id="findManager" resultMap="managerRoleMap">
+        select * from tblmanager where roleId=#{roleId}
+    </select>
+    <!--关联查询映射结果：resultMap-->
+    <select id="findRole" resultType="com.cykj.bean.Tblrole">
+        select * from tblrole where roleId=#{roleId}
+    </select>
+    <!--resultMap：关联映射字段
+        id：和上表中的resultMap属性值一致
+        type：主表的实体类型
+      -->
+    <resultMap id="managerRoleMap" type="com.cykj.bean.Tblmanager">
+        <!--assoication：指的是关联的查询结果
+            select：关联查询的id
+            javaType：关联查询的查询结果返回结果
+            property：主表中的属性
+            -->
+        <association property="tblrole" column="roleId" select="findRole" javaType="com.cykj.bean.Tblrole">
+        </association>
+    </resultMap>
+
+    <!--2.嵌套结果-->
+    <select id="findManager2" resultMap="managerRoleMap2">
+        select * from tblmanager a inner join tblrole b on a.roleId=b.roleId
+    </select>
+    <resultMap id="managerRoleMap2" type="com.cykj.bean.Tblmanager">
+        <!--主表的属性和数据库字段的映射-->
+        <id property="managerId" column="managerId"></id>
+        <result property="roleId" column="roleId"></result>
+        <result property="managerAcc" column="managerAcc"></result>
+        <result property="managerPwd" column="managerPwd"></result>
+        <result property="realName" column="realName"></result>
+        <result property="managerStatus" column="managerStatus"></result>
+        <association property="tblrole" column="roleId" javaType="com.cykj.bean.Tblrole">
+            <id property="roleId" column="roleId"></id>
+            <result property="roleName" column="roleName"></result>
+        </association>
+    </resultMap>
+
+    <!--3.在实体类中添加查询出的额外字段-->
+    <select id="findManager3" resultType="com.cykj.bean.Tblmanager">
+        select a.*,b.roleName from tblmanager a inner join tblrole b on a.roleId = b.roleId
+    </select>
+
+    <!--多查询动态sql-->
+    <select id="findManager4" resultType="com.cykj.bean.Tblmanager">
+        select a.*,b.roleName from tblmanager a inner join tblrole b on a.roleId=b.roleId
+--         where 1=1
+        <where>
+            <if test="roleId>0">
+--                 and a.roleId=#{roleId}
+                a.roleId=#{roleId}
+            </if>
+            <if test="realName!=null and realName!=''">
+                and a.realName like concat('%',#{realName},'%')
+            </if>
+            <if test="managerStatus>0">
+                and a.managerStatus=#{managerStatus}
+            </if>
+        </where>
+
+    </select>
+
+    <!--foreach批量添加-->
+    <insert id="addManagerList">
+        insert into tblmanager(roleId,realName) values
+        <foreach collection="managerList" item="manager" separator=",">
+            (#{manager.roleId},#{manager.realName})
+        </foreach>
+    </insert>
+
+    <!--登录-->
+    <select id="login" resultType="com.cykj.bean.Tblmanager">
+        select managerAcc,managerPwd from tblmanager where managerAcc=#{managerAcc}
+    </select>
+
+    <!--注册-->
+    <insert id="logon" useGeneratedKeys="true" keyProperty="managerId">
+        insert into tblmanager values(null,#{roleId},#{managerAcc},#{managerPwd},#{realName},#{managerStatus})
+    </insert>
+    <!--判断数据库中是否已有有账号-->
+    <select id="logonAcc" resultType="Integer">
+    select count(managerId) from tblmanager where managerAcc= #{managerAcc}
+    </select>
+</mapper>

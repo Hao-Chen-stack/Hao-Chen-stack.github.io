@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.GoodsMapper">
+    <!--
+        id:唯一标识
+        resultType:返回值类型
+        标签中写sql语句
+    -->
+
+    <select id="findGoodsList" resultType="com.cykj.bean.Tblgoods">
+        select * from tblgoods
+    </select>
+
+    <!--concat函数：拼接
+        #{}:占位，预防注入
+        ${}：有注入的风险，当把表名或者表中的字段名当做参数的时候用
+      -->
+
+    <!--插入
+    获取自增主键：useGeneratedKeys="true" keyProperty="主键字段"-->
+    <insert id="addGoods" useGeneratedKeys="true" keyProperty="goodsId">
+        insert into tblgoods(gtypeId,goodsName,goodsPrice,goodsImage,goodsDetail,goodsInventory,createTime)
+                            values(#{gtypeId},#{goodsName},#{goodsPrice},#{goodsImage},#{goodsDetail},#{goodsInventory},now())
+    </insert>
+
+    <!--删除-->
+    <delete id="delGoods">
+        delete from tblgoods where goodsId=#{goodsId}
+    </delete>
+
+    <!--修改-->
+    <update id="updateGoods">
+        update tblgoods set gtypeId=#{gtypeId},goodsName=#{goodsName},goodsPrice=#{goodsPrice},goodsImage=#{goodsImage},goodsDetail=#{goodsDetail},goodsInventory=#{goodsInventory},updateTime=now() where goodsId=#{goodsId}
+    </update>
+
+    <!--关联映射：一对一
+         1.嵌套查询
+         主表的返回类型改成：resultMap
+     -->
+    <select id="findGoods" resultMap="goodsGoodsTypeMap">
+        select * from tblgoods where gtypeId=#{gtypeId} and goodsPrice in(10,12,15) and goodsName like concat('%',#{goodsName},'%')
+    </select>
+    <!--关联查询映射结果：resultMap-->
+    <select id="findGoodsType" resultType="com.cykj.bean.Tblgoodtype">
+        select * from tblgoodtype where gtypeId=#{gtypeId}
+    </select>
+    <!--resultMap：关联映射字段
+        id：和上表中的resultMap属性值一致
+        type：主表的实体类型
+      -->
+    <resultMap id="goodsGoodsTypeMap" type="com.cykj.bean.Tblgoods">
+        <!--assoication：指的是关联的查询结果
+           select：关联查询的id
+           javaType：关联查询的查询结果返回结果
+           property：主表中的属性
+           -->
+        <association property="tblgoodtype" column="gtypeId" select="findGoodsType" javaType="com.cykj.bean.Tblgoodtype">
+
+        </association>
+    </resultMap>
+
+    <!--2.嵌套结果-->
+    <select id="findGoods2" resultMap="goodsGoodsTypeMap2">
+        select * from tblgoods a inner join tblgoodtype b on a.gtypeId=b.gtypeId
+    </select>
+    <resultMap id="goodsGoodsTypeMap2" type="com.cykj.bean.Tblgoods">
+        <!--主表的属性和数据库字段的映射-->
+        <id property="goodsId" column="goodsId"></id>
+        <result property="gtypeId" column="gtypeId"></result>
+        <result property="goodsName" column="goodsName"></result>
+        <result property="goodsPrice" column="goodsPrice"></result>
+        <result property="goodsImage" column="goodsImage"></result>
+        <result property="goodsDetail" column="goodsDetail"></result>
+        <result property="goodsInventory" column="goodsInventory"></result>
+        <result property="createTime" column="createTime"></result>
+        <result property="updateTime" column="updateTime"></result>
+        <association property="tblgoodtype" column="gtypeId" javaType="com.cykj.bean.Tblgoodtype">
+            <id property="gtypeId" column="gtypeId"></id>
+            <result property="gtypeName" column="gtypeName"></result>
+        </association>
+    </resultMap>
+
+    <!--3.在实体类中添加查询出的额外字段-->
+    <select id="findGoods3" resultType="com.cykj.bean.Tblgoods">
+        select a.*,b.gtypeName from tblgoods a inner join tblgoodtype b on a.gtypeId=b.gtypeId
+    </select>
+
+    <!--多查询动态sql-->
+    <select id="findGoods4" resultType="com.cykj.bean.Tblgoods">
+        select a.*,b.gtypeName from tblgoods a inner join tblgoodtype b on a.gtypeId=b.gtypeId
+        <where>
+            <if test="gtypeId>0">
+                a.gtypeId=#{gtypeId}
+            </if>
+            <if test="goodsPrice>0">
+                and a.goodsPrice in(#{goodsPrice})
+            </if>
+            <if test="goodsName!=null and goodsName!=''">
+                and a.goodsName like concat('%',#{goodsName},'%')
+            </if>
+
+        </where>
+    </select>
+
+    <!--foreach批量添加-->
+    <insert id="addGoodsList">
+        insert into tblgoods(goodsName,goodsPrice) values
+        <foreach collection="goodsList" item="goods" separator=",">
+            (#{goods.goodsName},#{goods.goodsPrice})
+        </foreach>
+    </insert>
+
+</mapper>

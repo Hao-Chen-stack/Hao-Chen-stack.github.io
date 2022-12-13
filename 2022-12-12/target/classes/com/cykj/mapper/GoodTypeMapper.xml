@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.GoodTypeMapper">
+    <!--
+        id:唯一标识
+        resultType:返回值类型
+        标签中写sql语句
+
+        查询
+    -->
+    <select id="findGoodTypeList" resultType="com.cykj.bean.Tblgoodtype">
+        select * from tblgoodtype
+    </select>
+
+    <!--concat函数：拼接
+        #{}:占位，预防注入
+        ${}：有注入的风险，当把表名或者表中的字段名当做参数的时候用
+        根据某个数据查询
+      -->
+    <select id="findGoodTypeListByName" resultType="com.cykj.bean.Tblgoodtype">
+        select * from tblgoodtype where realName like concat('%',#{realName},'%')
+    </select>
+
+    <!--插入
+    -获取自增主键：useGeneratedKeys="true" keyProperty="主键字段"-->
+    <insert id="addGoodType" useGeneratedKeys="true" keyProperty="gtypeId">
+        insert into tblgoodtype(managerId,gtypeName,parentId,gtypeStatus,createTime) values(#{managerId},#{gtypeName},#{parentId},
+                                        #{gtypeStatus},now())
+    </insert>
+
+    <!--删除-->
+    <delete id="delGoodType">
+        delete from tblgoodtype where gtypeId=#{gtypeId}
+    </delete>
+
+    <!--修改-->
+    <update id="updateGoodType">
+        update tblgoodtype set managerId=#{managerId},gtypeName=#{gtypeName},parentId=#{parentId},gtypeStatus=#{gtypeStatus},updateTime=now() where gtypeId=#{gtypeId}
+    </update>
+
+
+</mapper>

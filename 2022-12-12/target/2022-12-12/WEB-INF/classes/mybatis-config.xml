@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--配置文件的路径-->
+<!--    <properties resource="druid.properties"></properties>-->
+    <!--打印日志-->
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
+    <!--default="development"：默认环境-->
+<!--    <environments default="development">-->
+<!--        <environment id="development">-->
+<!--                &lt;!&ndash;事物管理器&ndash;&gt;-->
+<!--            <transactionManager type="JDBC"/>-->
+<!--            <dataSource type="POOLED">-->
+<!--                <property name="driver" value="${driver}"/>-->
+<!--&lt;!&ndash;                <property name="driver" value="${com.mysql.jdbc.Driver}"/>&ndash;&gt;-->
+<!--                <property name="url" value="${url}"/>-->
+<!--                <property name="username" value="${username}"/>-->
+<!--                <property name="password" value="${password}"/>-->
+<!--            </dataSource>-->
+<!--        </environment>-->
+<!--    </environments>-->
+    <!--sql的映射文件-->
+<!--    <mappers>-->
+<!--&lt;!&ndash;        <mapper resource="org/mybatis/example/BlogMapper.xml"/>&ndash;&gt;-->
+<!--        <mapper resource="com/cykj/mapper/TblmanagerMapper.xml"></mapper>-->
+<!--        <mapper resource="com/cykj/mapper/GoodTypeMapper.xml"></mapper>-->
+<!--        <mapper resource="com/cykj/mapper/GoodTypeMapper.xml"></mapper>-->
+<!--    </mappers>-->
+    <!-- 将包内的映射器接口实现全部注册为映射器 -->
+    <mappers>
+        <package name="com/cykj/mapper"/>
+    </mappers>
+</configuration>
