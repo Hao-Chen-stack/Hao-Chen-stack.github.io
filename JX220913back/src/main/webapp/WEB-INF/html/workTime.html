@@ -1,0 +1,331 @@
+<!doctype html>
+<html>
+<head>
+    <title>时间排班</title>
+    <style type="text/css">
+        .cldBody{
+            background:#f7f7f7;
+            width: 420px;
+            margin: 10px auto;
+            width: 100vw;
+            height: 100vh;
+        }
+        .cldBody table{
+            width: 100%;
+            height: 100%;
+        }
+        .cldBody .top{
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            position: relative;
+        }
+        #topDate{
+            font-size: 24px;
+        }
+        #week td{
+            font-size: 15px;
+        }
+        td{
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            font-size: 20px;
+        }
+        #tbody td:hover{
+            background: #ededed;
+        }
+        .curDate{
+            color: red;
+            font-weight: bold;
+        }
+        #left,#right{
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+        }
+        #left:hover, #right:hover{
+            background-color: rgba(30, 30, 30, 0.2);
+        }
+        #tbody td{
+            border: 1px solid black;
+        }
+
+        #timeDiv{
+            width: 100vw;
+            height: 120vh;
+            background-color: #1212127d;
+            position: absolute;
+            top:0px;
+            left: 0px;
+            z-index: 990;
+            display: none;
+        }
+        #msg{
+            position:absolute;
+            z-index:999;
+            width:420px;
+            background-color:white;
+            top:260px;
+            margin-top: -200px;
+            left: 50%;
+            margin-left: -210px;
+            text-align: center;
+            padding: 10px;
+        }
+
+        #timeTable{
+            width: 100%;
+            text-align: center;
+            line-height: 30px;
+            font-size: 18px;
+        }
+
+        #tdDiv{
+            width:100%;
+            height: 100%;
+            background-color: yellow;
+        }
+    </style>
+    <script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
+</head>
+<body>
+<div class="cldBody">
+    <!--点击日期出现的弹窗-->
+    <div id="timeDiv" start="" end="" allDay="">
+        <div id="msg">
+            <h3>请选择时间段</h3>
+            <table border="1" id="timeTable">
+                <tr>
+                    <th colspan="2" style="text-align: center">
+                        上午
+                    </th>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" value="08:00~09:00"> 08:00~09:00</td>
+                    <td><input type="checkbox" value="09:00~10:00"> 09:00~10:00</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" value="10:00~11:00"> 10:00~11:00</td>
+                    <td><input type="checkbox" value="10:00~11:00"> 11:00~12:00</td>
+                </tr>
+
+                <tr>
+                    <th colspan="2" style="text-align: center">
+                        下午
+                    </th>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" value="14:00~15:00"> 14:00~15:00</td>
+                    <td><input type="checkbox" value="15:00~16:00"> 15:00~16:00</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" value="16:00~17:00"> 16:00~17:00</td>
+                    <td><input type="checkbox" value="17:00~18:00"> 17:00~18:00</td>
+                </tr>
+            </table>
+            <div style="margin-top: 10px;font-size: 15px;">
+                <button id="sure" style="width: 50px">确定</button>
+                <button id="cancel" style="margin-left: 20px;width: 50px">取消</button>
+            </div>
+
+        </div>
+    </div>
+
+    <table cellspacing="0" cellpadding="0">
+        <thead>
+        <tr>
+            <td colspan="7">
+                <div class="top">
+                    <span id="left">&lt;</span>
+                    <span id="topDate"></span>
+                    <span id="right">&gt;</span>
+                </div>
+            </td>
+        </tr>
+        <tr id="week" >
+            <td>日</td>
+            <td>一</td>
+            <td>二</td>
+            <td>三</td>
+            <td>四</td>
+            <td>五</td>
+            <td>六</td>
+        </tr>
+        </thead>
+        <tbody id="tbody" ></tbody>
+    </table>
+</div>
+</body>
+
+<script type="text/javascript">
+    $("#tbody td:parent").css("cursor","pointer")
+
+    var date = new Date();
+    var year = date.getFullYear();
+    var nowyear = date.getFullYear();
+    var month = date.getMonth()+1;
+    var nowmonth = date.getMonth()+1;
+    var dateday = date.getDate();
+    var todateHtml = year + '年'+ month + '月';
+    $('#topDate').text(todateHtml);
+    showcld();  //页面加载后执行函数
+
+    //当前选中的td（每次点击日期更新）
+    var $currentTd = "";
+    //当前日期
+    var date1 = "";
+
+
+    // 生成日历
+    function showcld(){
+        var monthDay = [31,28,31,30,31,30,31,31,30,31,30,31];  // 创建数组存放每个月有多少天 ,默认2月为28天
+        // 判断闰年
+        if(year % 4 == 0 && year %100 != 0 || year % 400 == 0){
+            monthDay[1] = 29;
+        }
+        // 计算每个月的天数
+        var days = monthDay[month-1];
+        // 判断每月第一天为周几
+        date.setYear(year);        //某年
+        date.setMonth(month-1);   //某年的某月
+        date.setDate(1);   // 某月的某天
+        var weekday = date.getDay();  // 判断某天是周几
+        // 补齐一号前的空格
+        var tbodyHtml = '<tr>';
+        for(var i = 0; i<weekday; i++){
+            tbodyHtml += "<td></td>";
+        }
+        // 补齐每月的日期
+        var changLine = weekday;
+        var tagClass = '';
+        for(i=1; i<=days; i++){//每一个日期的填充
+            if(year == nowyear && month == nowmonth && i == dateday) {
+                tagClass = "curDate";//当前日期对应格子
+            }else{
+                tagClass = "isDate";
+            }
+            var monthStr = month+"";
+            if(month<10){
+                monthStr = "0"+monthStr;
+            }
+            var dateStr = i+"";
+            if(i<10){
+                dateStr = "0"+dateStr;
+            }
+            tbodyHtml += "<td value='"+year+"-"+monthStr+"-"+dateStr+"'>" + i + "</td>";
+            changLine = (changLine+1)%7;
+            if(changLine == 0 && i != days){//是否换行填充的判断
+                tbodyHtml += "</tr><tr>";
+            }
+        }
+        $('#tbody').empty();   // 清空原有的内容
+        $('#tbody').append(tbodyHtml);   //添加当前月份的日期内容
+    }
+
+    // 点击上一个月
+    $('#left').click(function(){
+        month = month-1;
+        if(month < 1){
+            month = 12;
+            year--;
+        }
+        var todateHtml = year + '年'+ month + '月';
+        $('#topDate').text(todateHtml);
+        showcld();
+    });
+
+    //点击下一个月
+    $('#right').click(function(){
+        month = month+1;
+        if(month > 12){
+            month = 1;
+            year++;
+        }
+        var todateHtml = year + '年'+ month + '月';
+        $('#topDate').text(todateHtml);
+        showcld();
+    })
+
+
+
+    //点击不为空的日期
+    $(document).on("click","#tbody td:parent",function () {
+        date1 = $(this).attr("value");
+        $currentTd = $(this);
+        $currentTd.find("button").each(function(){
+            var btnTime=$(this).text()
+            $("#timeDiv input[type=checkbox]").each(function(){
+                var checkTime = $(this).val()
+                if(btnTime==checkTime){
+                    $(this).prop("checked", "checked")
+                }
+            })
+        })
+        // alert(date1);
+        $("#timeDiv").show();
+    });
+
+    //点击取消按钮，隐藏div
+    $("#cancel").click(function () {
+        $("#timeDiv").hide(200);
+        $("#timeDiv input[type=checkbox]").removeAttr("checked");
+    });
+
+
+    //点击确定按钮
+    $("#sure").click(function () {
+        //添加选中的时间段到日程表中
+        var times = new Array();
+        //选中的时间段
+        var $sel = $("#timeDiv input[type=checkbox]:checked");
+        $currentTd.find("button").remove();
+        $sel.each(function(){
+            $currentTd.append("<button>"+$(this).val()+"</button>");
+            times.push($(this).val());
+            // times+=$(this).val()+";";
+        });
+        // console.log(times,date1)
+
+
+        //添加选中的日程到数据库中
+        $.ajax({
+            url:"workTime/addWorkTimeAndDate",
+            data:{"date":date1,"times":times},
+            type:"post",
+            dataType:"json",
+            success:function (i) {
+                if (i>0){
+                    alert("日期和时间添加成功")
+                }else {
+                    alert("日期和时间添加失败")
+                }
+            }
+        });
+
+        //隐藏div
+        $("#timeDiv input[type=checkbox]").removeAttr("checked");
+        $("#timeDiv").hide();
+
+    });
+
+</script>
+<script>
+    $.ajax({
+        url:"workTime/workTimeList",
+        // data:{managerId:2},
+        type:"post",
+        dataType:"json",
+        success:function (res) {
+            console.log(res);
+            for (var i = 0; i <res.length; i++) {
+                var workTime = res[i].workTime
+                var workDate = res[i].workDate
+
+                $("#tbody td[value="+workDate+"]").append("<button>"+workTime+"<tton>")
+            }
+        }
+    });
+</script>
+</html>

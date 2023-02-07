@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>注册界面</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <style>
+        #div1{
+            width: 500px;
+            height: auto;
+            text-align: center;
+            margin: auto;
+            border: 2px solid black;
+
+        }
+        #btn1{
+            height: 45px;
+            width: 82px;
+            font-size: 20px;
+            background-color: red;
+            color: white ;
+            border: 0;
+        }
+        #btn2{
+            height: 45px;
+            width: 110px;
+            font-size: 20px;
+            background-color: blue;
+            color: white ;
+            border: 0;
+        }
+        #btn1:hover{
+            font-size: 22px;
+            cursor: pointer;
+
+        }
+        #btn2:hover{
+            font-size: 22px;
+            cursor: pointer;
+
+        }
+        a:hover{
+            cursor: pointer;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<form id="registerForm">
+<div id="div1">
+    <h1>用户注册</h1>
+    <br>
+    账号：<input style="height: 47px; width: 250px; " type="text" placeholder="请输入账号" name="userAcc" id="userAcc" onblur="checkAcc(this)">
+    <span id="accMsg" style="font-size: 13px;color: red;display: none;"></span>
+    <br>
+    用户名：<input style="height: 47px; width: 250px; " type="text" placeholder="请输入用户名/非必填" name="userName" id="userName">
+    <br>
+    密&nbsp;&nbsp;&nbsp;码：<input style="height: 47px; width: 250px; " type="password" placeholder="请输入密码" name="userPwd" id="userPwd" onblur="checkPwd(this)">
+    <span id="pwdMsg" style="font-size: 13px;color: red;display: none;"></span>
+    <br>
+    确认密码：<input style="height: 47px; width: 250px; " type="password" placeholder="请输入密码" name="surePwd" id="surePwd" onblur="checkPwd2(this)">
+    <span id="pwdMsg2" style="font-size: 13px;color: red;display: none;"></span>
+    <br>
+    性&nbsp;&nbsp;&nbsp;别：
+    <input class="userSex" name="userSex" value="1" type="radio" style="height: 20px; width:20px;">男
+    <input class="userSex" name="userSex" value="0" type="radio" style="height: 20px; width:20px;">女
+    <br>
+    年&nbsp;&nbsp;&nbsp;龄：
+    <input id="age" name="userAge" type="text" style="height: 47px; width: 250px;"placeholder="请输入年龄">
+    <br>
+    手机号：
+    <input id="phone" name="userPhone" type="text" style="height: 47px; width: 250px;"placeholder="请输入手机号" onblur="checkPhone(this)">
+    <span id="phoneMsg" style="font-size: 13px;color: red;display: none;"></span>
+    <br>
+    地&nbsp;&nbsp;&nbsp;址：
+    <input style="height: 47px; width: 250px; " type="text" placeholder="请输入地址" name="userAddress" id="userAddress" onblur="checkPwd(this)">
+    <br>
+    <button id="btn1" type="button" onclick="register()">注册</button>
+    &nbsp;&nbsp;&nbsp;
+    <a href="login">
+    <button id="btn2" type="button">去登陆</button>
+    </a>
+</div>
+</form>
+</body>
+<script src="js/userLoginAndLogon.js"></script>
+<script src="js/account.js"></script>
+</html>

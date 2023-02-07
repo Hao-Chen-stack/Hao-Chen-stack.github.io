@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>后台用户管理</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/layui-v2.6.8/layui/layui.js"></script>
+    <link href="js/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
+</head>
+<body>
+<h1>后台用户管理</h1>
+<button onclick="openAddWin()">新增</button>
+<form id="searchFrom">
+    <input type="hidden" name="page" id="page">
+    <input type="hidden" name="size" id="size">
+
+    <input type="text" placeholder="后台用户账号" name="managerAcc">
+    <input type="text" placeholder="后台用户名称" name="realName">
+    <input type="text" placeholder="职称" name="title">
+    <select name="managerStatus" id="managerStatus">
+        <option value="-1">请选择状态</option>
+        <option value="0">禁用</option>
+        <option value="1">启用</option>
+    </select>
+    <button type="button" onclick="searchManager()">查询</button>
+</form>
+<table class="layui-table">
+    <tr>
+        <th>账号</th>
+        <th>密码</th>
+        <th>姓名</th>
+        <th>职称</th>
+        <th>毕业院校</th>
+        <th>状态</th>
+        <th>操作</th>
+    </tr>
+    <tbody id="tb"></tbody>
+</table>
+
+<div style="text-align: center">
+    <button id="prev">上一页</button>
+    <span style="margin: 0px 30px 0px 30px" id="pageMsg"></span>
+    <button id="next">下一页</button>
+</div>
+
+<!--新增后台用户的弹窗-->
+<div id="addWin" style="position: absolute;width: 100vw;height: 100vh;
+				background-color: #00000024;left: 0;top: 0; display: none;">
+    <div style="width: 310px;height: auto;background-color: aliceblue;
+					margin: auto;
+					margin-top: 20px;text-align: center;padding: 15px;">
+        <h1>新增后台用户</h1>
+        <form id="addForm">
+            <!--                <input type="hidden" name="action" value="addGoods">-->
+            <table style="width: 100%;line-height: 45px;">
+                <tr>
+                    <td style="text-align: right;">用户类型：</td>
+                    <td>
+                        <!--                            <input type="text" placeholder="类型id" id="addType" name="gtypeId" style="width: 100px;">-->
+                        <select name="roleid" id="addroleid" onchange="addAreaCheck(this.value)">
+                            <option value="-1">请选择用户类型</option>
+                            <option value="1">管理员</option>
+                            <option value="2">咨询师</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">账号：</td>
+                    <td>
+                        <input type="text" placeholder="账号" id="addmanagerAcc" name="managerAcc" style="width: 100px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">密码：</td>
+                    <td>
+                        <input type="text" placeholder="密码" id="addmanagerPwd" name="managerPwd" style="width: 100px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">姓名：</td>
+                    <td>
+                        <input type="text" placeholder="姓名" id="addName" name="realName" style="width: 100px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">职称：</td>
+                    <td>
+                        <input type="text" placeholder="职称" id="addtitle" name="title" style="width: 100px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">毕业院校：</td>
+                    <td>
+                        <input type="text" placeholder="毕业院校" id="addSchool" name="school" style="width: 100px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td  id="childAdd">
+
+                    </td>
+                </tr>
+                <tr id="childPriceAdd">
+
+                </tr>
+                <tr id="childBackgroundAdd">
+
+                </tr>
+            </table>
+            <button style="margin-top: 20px; margin-right: 50px;" type="button" onclick="addManager()">确定</button>
+            <button type="button" onclick="cancelAdd()">取消</button>
+        </form>
+    </div>
+</div>
+</body>
+<script src="js/manager.js"></script>
+</html>

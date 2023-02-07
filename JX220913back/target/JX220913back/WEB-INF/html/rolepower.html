@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>权限分配</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/layui-v2.6.8/layui/layui.js"></script>
+    <link href="js/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
+    <script th:src="@{js/jquery-1.12.4.min.js}"></script>
+    <style>
+        #rp{
+            width: 90%;
+            height: 800px;
+            border: 1px solid black;
+            margin: auto;
+        }
+        #rp>div{
+            float: left;
+            /* background-color: antiquewhite; */
+            width: 25%;
+            height: 100%;
+        }
+        ul{
+            list-style: none;
+        }
+        li{
+            font-size: 20px;
+            padding: 10px;
+        }
+        a{
+            text-decoration: none;
+            color: black;
+            cursor: pointer;
+        }
+        a:hover{
+            background-color: beige;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<h1 style="text-align: center;padding: 20px">权限管理</h1>
+<form id="powerFrom">
+<div id="rp">
+    <div style="background-color: beige;">
+        <ul id="role">
+<!--            <li>-->
+<!--                <a href="">管理员</a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="">超级管理员</a>-->
+<!--            </li>-->
+        </ul>
+    </div>
+    <div style="background-color: lightgray;">
+        <h1>已分配权限：</h1>
+        <ul id="distributedPower">
+<!--            <li>-->
+<!--                <input type="checkbox">-->
+<!--                <a href="">系统管理</a>-->
+<!--                <ul>-->
+<!--                    <li>-->
+<!--                        <input type="checkbox">-->
+<!--                        <a href="">修改密码</a>-->
+<!--                    </li>-->
+<!--                    <li>-->
+<!--                        <input type="checkbox">-->
+<!--                        <a href="">删除用户</a>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </li>-->
+        </ul>
+    </div>
+    <div style="background-color: beige;display:flex;justify-content: center;" class="Num3Div">
+            <div style="margin-top: 20%" class="btnDiv">
+<!--                <button class="layui-btn layui-btn-warm" type="button" onclick="" >移除所有权限</button>-->
+<!--                <br>-->
+<!--                从所有未分配的一级菜单包括子菜单分配给角色-->
+                <button class="layui-btn" type="button" onclick="giveUnHaveForRole()"> << </button>
+                <br>
+<!--                从右侧选中子菜单分配给角色-->
+                <button class="layui-btn layui-btn-warm" type="button" onclick="addCheckUnDisPower()"> < </button>
+                <br>
+<!--                将所有已分配一级菜单及子菜单取消-->
+                <button class="layui-btn" type="button" onclick="cancelDisPowerAll()"> >> </button>
+                <br>
+<!--                将分配的子菜单取消-->
+                <button class="layui-btn layui-btn-warm" type="button" onclick="cancelCheckDisPower()"> > </button>
+            </div>
+    </div>
+    <div style="background-color: lightgray;">
+        <h1>未分配权限：</h1>
+        <ul id="undistributedPower"></ul>
+    </div>
+</div>
+</form>
+</body>
+
+<script>
+    var role;
+    $(function () {
+        findRoleList();
+    })
+    //查询角色列表
+    function findRoleList() {
+        $.ajax({
+            url:"power/roleList",
+            dataType:"json",
+            success:function (roleList) {
+                for (var i = 0; i < roleList.length ; i++) {
+
+                    $("#role").append("<li><a roleid='"+roleList[i].roleid+"'>"+roleList[i].roleName+"</a></li>")
+                }
+            }
+        })
+
+    }
+
+    //点击角色进行显示已分配权限和未分配权限
+    $(document).on("click","#role a",function () {
+        // alert("角色id:"+$(this).attr("roleid"))
+        role=$(this).attr("roleid");
+        findPowerList();
+    })
+
+    //展现角色对应的已分配权限和未分配权限
+    function findPowerList() {
+        console.log(role)
+        $.ajax({
+            url: "power/powerList",
+            data:{"roleid":role},
+            dataType:"json",
+            success:function (map) {
+                var haveList = map.haveList;
+                var unHaveList = map.unHaveList;
+                $("#distributedPower").empty();
+                for (var i = 0; i < haveList.length ; i++) {
+                    if (haveList[i].parentId==0){
+                        $("#distributedPower").append("<li id='have"+haveList[i].powerid+"'><input type='checkbox' name='havepowerid' value='"+haveList[i].powerid+"'><a href=' javascript:void(null);'>"+haveList[i].powerName+"</a><ul></ul></li>")
+                    }
+                }
+
+                for (var i = 0; i <haveList.length ; i++) {
+                    // console.log($("#have"+haveList[i].parentId+">ul").html())
+                    $("#have"+haveList[i].parentId+">ul").append("<li id='"+haveList[i].powerid+"'><input type='checkbox' name='havepowerid' value='"+haveList[i].powerid+"'><a href='javascript:void(null);'>"+haveList[i].powerName+"</a></li>")
+                }
+
+                $("#undistributedPower").empty();
+                for (var i = 0; i < unHaveList.length ; i++) {
+                    if (unHaveList[i].parentId==0){
+                        $("#undistributedPower").append("<li id='no"+unHaveList[i].powerid+"'><input type='checkbox' name='powerid' value='"+unHaveList[i].powerid+"'><a href='javascript:void(null);'>"+unHaveList[i].powerName+"</a><ul></ul></li>")
+                    }
+                }
+
+                for (var i = 0; i <unHaveList.length ; i++) {
+                    $("#no"+unHaveList[i].parentId+">ul").append("<li id='"+unHaveList[i].powerid+"'><input type='checkbox' name='powerid' value='"+unHaveList[i].powerid+"'><a href='javascript:void(null);'>"+unHaveList[i].powerName+"</a></li>")
+                }
+            }
+
+
+        })
+    }
+
+    //从所有未分配的一级菜单包括子菜单分配给角色
+    function giveUnHaveForRole() {
+        if (role!=null && role!==""){
+            // console.log(role)
+            $.ajax({
+                url:"power/addAllDisPower",
+                data:{"roleid":role},
+                dataType:"json",
+                success:function (i) {
+                    if (i>0){
+                        alert("操作成功")
+                    }else {
+                        alert("操作失败")
+                    }
+                    findPowerList();
+                }
+            });
+        }else {
+            // console.log("请先选择角色")
+            alert("请先选择角色")
+        }
+
+    }
+
+    //将所有已分配一级菜单及子菜单取消
+    function cancelDisPowerAll() {
+        if (role!=null && role!==""){
+            $.ajax({
+                url:"power/cancelDisPowerAll",
+                data:{"roleid":role},
+                success:function (i) {
+                    if (i>0){
+                        alert("取消全部分配成功")
+                    }else {
+                        alert("取消全部分配失败")
+                    }
+                    findPowerList()
+                }
+            });
+        }else {
+            // console.log("请先选择角色")
+            alert("请先选择角色")
+        }
+
+    }
+
+    //从右侧选中子菜单分配给角色
+    function addCheckUnDisPower() {
+        if (role!=null && role!==""){
+            // var checkList = $("#undistributedPower input[type='checkbox']:checked");
+            // console.log(checkList);
+            $.ajax({
+                url:"power/addCheckUnDisPower",
+                // data:{"roleid":role,"checkList":checkList},
+                data:$("#powerFrom").serialize()+"&roleid="+role,
+                dataType:"json",
+                success:function (i) {
+                    if (i>0){
+                        alert("分配成功")
+                    }else {
+                        alert("分配失败")
+                    }
+                    findPowerList()
+                }
+            });
+        }else {
+            // console.log("请先选择角色")
+            alert("请先选择角色")
+        }
+
+    }
+
+    //将分配的子菜单取消
+    function cancelCheckDisPower() {
+        if (role!=null && role!==""){
+            $.ajax({
+                url:"power/cancelCheckDisPower",
+                // data:{"roleid":role,"checkList":checkList},
+                data:$("#powerFrom").serialize()+"&roleid="+role,
+                dataType:"json",
+                success:function (i) {
+                    if (i>0){
+                        alert("取消成功")
+                    }else {
+                        alert("取消失败")
+                    }
+                    findPowerList()
+                }
+            });
+        }else {
+            // console.log("请先选择角色")
+            alert("请先选择角色")
+        }
+
+    }
+</script>
+</html>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TblworkTimeMapper">
+
+    <select id="findWorkTimeByMacc" resultType="com.cykj.bean.Tblworktime">
+        select workTime,workDate from tblworktime where managerId =(select managerId from tblmanager where managerAcc = #{managerAcc})
+    </select>
+
+    <insert id="addTimeAndDate">
+        insert into tblworktime values
+        <foreach collection="workTime" item="workTime" separator=",">
+            (null,#{managerId},#{workTime},#{workDate},1)
+        </foreach>
+    </insert>
+</mapper>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <!-- 引入 layui.js -->
+    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <script th:src="@{/js/jquery-1.12.4.min.js}"></script>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+<div id="doctorMsgWin" style="position: absolute;width: 100vw;height: 250vh;
+				background-color: #00000024;left: 0;top: 0; ">
+    <div style="width: 550px;height: auto;background-color: aliceblue;
+					margin: auto;
+					margin-top: 200px;text-align: center;padding: 15px;">
+        <h1>预约详情</h1>
+        <form id="addAppointment">
+            <table style="width: 100%;line-height: 45px;">
+                <tr>
+                    <td>咨询人:<span id="username"></span></td>
+                    <td>
+                        领域: <span id="areaName"></span>
+                    </td>
+                    <td>
+                        预约时间: <span id="appointTime"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        预约状态: <span id="appointState"></span>
+                    </td>
+                    <td>
+                        费用: <span id="appointCost"></span>
+                    </td>
+                    <td>
+                        咨询师: <span id="managerName"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">问题描述：</td>
+                    <td colspan="2">
+                        <span id="problem"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">诊断答复：</td>
+                    <td colspan="2">
+                        <span id="answer"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">答复时间：</td>
+                    <td colspan="2">
+                        <span id="answerTime"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">评价内容:</td>
+                    <td colspan="2">
+                        <div>
+                            <iframe style="height: 300px;" src="UserEvaluation"></iframe>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <button type="button" class="layui-btn layui-btn-warm" onclick="cancelAdd()">返回</button>
+        </form>
+    </div>
+</div>
+</body>
+<script src="js/appointmentList.js"></script>
+<script>
+    var fUrl = window.location.href;
+    var data = decodeURI(fUrl.split("?")[1].split("=")[1]);
+    var parse = JSON.parse(data);
+    // console.log(parse)
+    $(function () {
+        $.ajax({
+            url:"appointment/appointmentDetails",
+            data:parse,
+            // data:{"appointmentId":appointmentId,"userId":userId,"managerAcc":managerAcc},
+            async: false,
+            dataType:"json",
+            success:function (map) {
+                var listByAppointId = map.listByAppointId;
+                var realNameByAccList = map.realNameByAccList;
+                var userNameByIdList = map.userNameByIdList;
+                $("#username").append(userNameByIdList[0].userName)
+                $("#areaName").append(listByAppointId[0].areaName)
+                $("#appointTime").append(listByAppointId[0].appointmentdate)
+                $("#appointState").append(listByAppointId[0].appointstate)
+                $("#appointCost").append(listByAppointId[0].appointCost)
+                $("#managerName").append(realNameByAccList[0].realName)
+                $("#problem").append(listByAppointId[0].problem)
+                $("#answer").append(listByAppointId[0].answer)
+                $("#answerTime").append(listByAppointId[0].replydate)
+                layui.element.init()//渲染
+            }
+        });
+    })
+    //关闭咨询师详情窗口
+    function cancelAdd() {
+        $("#username").empty();
+        $("#areaName").empty();
+        $("#appointTime").empty();
+        $("#appointState").empty();
+        $("#appointCost").empty();
+        $("#managerName").empty();
+        $("#problem").empty();
+        $("#answer").empty();
+        $("#answerTime").empty();
+        window.parent.location.href='userIndex';
+    }
+</script>
+</html>

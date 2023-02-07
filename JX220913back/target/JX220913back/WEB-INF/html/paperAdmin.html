@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <!-- 引入 layui.js -->
+    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <script th:src="@{/js/jquery-1.12.4.min.js}"></script>
+    <style type="text/css">
+
+    </style>
+</head>
+<body>
+<!--<div id="paperMsgWin" style="position: absolute;width: 100vw;height: 250vh;-->
+<!--				background-color: #00000024;left: 0;top: 0; ">-->
+<!--    <div style="width: 550px;height: auto;background-color: aliceblue;-->
+<!--					margin: auto;-->
+<!--					margin-top: 200px;text-align: center;padding: 15px;">-->
+<h1 style="text-align: center">题库管理</h1>
+<form id="paperAdmin" name="paperAdmin">
+    领域：<select name="areaName" id="areaName">
+    <option value="">请选择</option>
+    <option value="发展心理学">发展心理学</option>
+    <option value="学习心理学">学习心理学</option>
+    <option value="人格心理学">人格心理学</option>
+    <option value="感知心理学">感知心理学</option>
+    <option value="比较心理学">比较心理学</option>
+    <option value="认知心理学">认知心理学</option>
+    <option value="犯罪心理学">犯罪心理学</option>
+</select>共<span id="paperCount"></span>题
+    <button type="button" class="layui-btn layui-btn-warm" onclick="searchManager()">查询</button>
+</form>
+
+<h2 style="text-align: left;">题目预览:</h2>
+<button style="float: right;" class="layui-btn layui-btn-warm" onclick="openAddWin()">新增</button>
+<table style="width: 100%;line-height: 45px;">
+    <!--                <tr>-->
+    <!--                    <td>1.我感到愉快</td>-->
+    <!--                    <td><input type="radio" name="option" id="optionA" value="5">偶尔</td>-->
+    <!--                    <td><input type="radio" name="option" id="optionB" value="4">有时</td>-->
+    <!--                    <td><input type="radio" name="option" id="optionC" value="3">常常</td>-->
+    <!--                    <td><input type="radio" name="option" id="optionD" value="2">没有</td>-->
+    <!--                </tr>-->
+    <!--           <input type="text" id="answer" name="checkResult" hidden value="0" /> -->
+    <tbody id="paperTb"></tbody>
+</table>
+<div style="text-align: center">
+    <button id="prev" class="layui-btn layui-btn-warm">上一页</button>
+    <span style="margin: 0px 30px 0px 30px" id="pageMsg"></span>
+    <button id="next" class="layui-btn layui-btn-warm">下一页</button>
+</div>
+
+<!--新增题库的弹窗-->
+<div id="addWin" style="position: absolute;width: 100vw;height: 100vh;
+				background-color: #00000024;left: 0;top: 0; display: none;">
+    <div style="width: 310px;height: auto;background-color: aliceblue;
+					margin: auto;
+					margin-top: 20px;text-align: center;padding: 15px;">
+        <h1>新增题目</h1>
+        <form id="addForm">
+            <!--                <input type="hidden" name="action" value="addGoods">-->
+            <table style="width: 100%;line-height: 45px;">
+                <tr>
+                    <td style="text-align: right;">领域名称：</td>
+                    <td>
+                        <!--                            <input type="text" placeholder="类型id" id="addType" name="gtypeId" style="width: 100px;">-->
+                        <select name="areaName" id="addAreaName">
+                            <option value="">请选择领域</option>
+                            <option value="发展心理学">发展心理学</option>
+                            <option value="学习心理学">学习心理学</option>
+                            <option value="人格心理学">人格心理学</option>
+                            <option value="感知心理学">感知心理学</option>
+                            <option value="比较心理学">比较心理学</option>
+                            <option value="认知心理学">认知心理学</option>
+                            <option value="犯罪心理学">犯罪心理学</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">题目内容：</td>
+                    <td>
+                        <input type="text" placeholder="题目内容" id="addpaperContent" name="paperContent" style="width: 100px;" onblur="checkContext(this)">
+                        <span id="context" style="font-size: 13px;color: red;display: none;"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">题目分数：</td>
+                    <td>
+                        <input type="text" placeholder="题目分数" id="addpaperscore" name="paperscore" style="width: 100px;" onblur="checkScore(this)">
+                        <span id="testScore" style="font-size: 13px;color: red;display: none;"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">选项A：</td>
+                    <td>
+                        <input type="text" placeholder="选项A" id="addoptionA" name="optionA" style="width: 100px;" onblur="checkA(this)">
+                        <span id="A" style="font-size: 13px;color: red;display: none;"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">选项B：</td>
+                    <td>
+                        <input type="text" placeholder="选项B" id="addoptionB" name="optionB" style="width: 100px;" onblur="checkB(this)">
+                        <span id="B" style="font-size: 13px;color: red;display: none;"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">选项C：</td>
+                    <td>
+                        <input type="text" placeholder="选项C" id="addoptionC" name="optionC" style="width: 100px;" onblur="checkC(this)">
+                        <span id="C" style="font-size: 13px;color: red;display: none;"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">选项D：</td>
+                    <td>
+                        <input type="text" placeholder="选项D" id="addoptionD" name="optionD" style="width: 100px;" onblur="checkD(this)">
+                        <span id="D" style="font-size: 13px;color: red;display: none;"></span>
+                    </td>
+                </tr>
+            </table>
+            <button style="margin-top: 20px; margin-right: 50px;" type="button" onclick="addPaperMsg()" class="layui-btn layui-btn-warm">确定</button>
+            <button type="button" onclick="cancelAdd()" class="layui-btn layui-btn-warm">取消</button>
+        </form>
+    </div>
+</div>
+
+<!--修改题库的弹窗-->
+<div id="updateWin" style="position: absolute;width: 100vw;height: 100vh;
+				background-color: #00000024;left: 0;top: 0; display: none;">
+    <div style="width: 310px;height: auto;background-color: aliceblue;
+					margin: auto;
+					margin-top: 20px;text-align: center;padding: 15px;">
+        <h1>修改题目</h1>
+        <form id="updateForm">
+            <!--                <input type="hidden" name="action" value="addGoods">-->
+            <table style="width: 100%;line-height: 45px;">
+                <tr>
+                    <td style="text-align: right;">领域名称：</td>
+                    <td>
+                        <!--                            <input type="text" placeholder="类型id" id="addType" name="gtypeId" style="width: 100px;">-->
+                        <select name="areaName" id="updateAreaName">
+                            <option value="">请选择领域</option>
+                            <option value="发展心理学">发展心理学</option>
+                            <option value="学习心理学">学习心理学</option>
+                            <option value="人格心理学">人格心理学</option>
+                            <option value="感知心理学">感知心理学</option>
+                            <option value="比较心理学">比较心理学</option>
+                            <option value="认知心理学">认知心理学</option>
+                            <option value="犯罪心理学">犯罪心理学</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">题目内容：</td>
+                    <td>
+                        <input type="text" placeholder="题目内容" id="updatepaperContent" name="paperContent" style="width: 100px;" onblur="checkupdateContext(this)">
+                        <span id="updatecontext" style="font-size: 13px;color: red;display: none;"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">题目分数：</td>
+                    <td>
+                        <input type="text" placeholder="题目分数" id="updatepaperscore" name="paperscore" style="width: 100px;" onblur="checkupdateScore(this)">
+                        <span id="updatetestScore" style="font-size: 13px;color: red;display: none;"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">选项A：</td>
+                    <td>
+                        <input type="text" placeholder="选项A" id="updateoptionA" name="optionA" style="width: 100px;" onblur="checkupdateA(this)">
+                        <span id="updateA" style="font-size: 13px;color: red;display: none;"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">选项B：</td>
+                    <td>
+                        <input type="text" placeholder="选项B" id="updateoptionB" name="optionB" style="width: 100px;" onblur="checkupdateB(this)">
+                        <span id="updateB" style="font-size: 13px;color: red;display: none;"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">选项C：</td>
+                    <td>
+                        <input type="text" placeholder="选项C" id="updateoptionC" name="optionC" style="width: 100px;" onblur="checkupdateC(this)">
+                        <span id="updateC" style="font-size: 13px;color: red;display: none;"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">选项D：</td>
+                    <td>
+                        <input type="text" placeholder="选项D" id="updateoptionD" name="optionD" style="width: 100px;" onblur="checkupdateD(this)">
+                        <span id="updateD" style="font-size: 13px;color: red;display: none;"></span>
+                    </td>
+                </tr>
+            </table>
+            <button style="margin-top: 20px; margin-right: 50px;" type="button" onclick="updatePaperMsg()" class="layui-btn layui-btn-warm">确定</button>
+            <button type="button" onclick="updateCancelAdd()" class="layui-btn layui-btn-warm">取消</button>
+        </form>
+    </div>
+</div>
+
+<!--    </div>-->
+<!--</div>-->
+</body>
+<script>
+
+    //当前页数，默认从第一页开始
+    var page = 1;
+    //每页显示的条数
+    var size = 6;
+    //总页数
+    var pageSize;
+
+    $(function () {
+        findPaperByAreaName()
+    });
+
+    //按条件查询题目列表
+    function searchManager() {
+        page = 1;
+        findPaperByAreaName();
+    }
+
+    var paperId;
+    //生成题目和选项
+    function findPaperByAreaName() {
+        $.ajax({
+            url: "tblPaper/findPaperByAreaName",
+            data: $("#paperAdmin").serialize() + "&page=" + page + "&size=" + size,
+            dataType: "json",
+            success: function (map) {
+                //更新当前页和总页数
+                var counts = map.counts;
+                pageSize = counts % size == 0 ? counts / size : parseInt(counts / size) + 1;
+                $("#pageMsg").html("第" + page + "页/共" + pageSize + "页");
+                var paperByAreaNameList = map.data;
+                var html = "";
+                for (var i = 0; i < paperByAreaNameList.length; i++) {
+
+                    html += "<tr id=" + paperByAreaNameList[i].paperId + ">";
+
+                    html += "<td colspan='2' style='text-align: left'>";
+                    html += paperByAreaNameList[i].paperId + "." + paperByAreaNameList[i].paperContent;
+                    html += "</td>";
+
+                    html += "<td colspan='2' style='text-align: right'>";
+                    html += "<button type='button' class=\'layui-btn layui-btn-normal\' onclick='openUpdateWin("+paperByAreaNameList[i].paperId+")'>修改</button>";
+                    html += "<button type='button' class=\'layui-btn layui-btn-danger\' onclick='isDel("+paperByAreaNameList[i].paperId+")'>删除</button>";
+
+                    html += "</td>";
+
+                    html += "</tr>";
+
+                    html += "<tr>";
+
+                    html += "<td>";
+                    html += "<input type=\"radio\" name=" + paperByAreaNameList[i].paperId + " id=\"optionA\" value=" + paperByAreaNameList[i].optionAscore + ">" + paperByAreaNameList[i].optionA + "";
+                    html += "</td>";
+
+                    html += "<td>";
+                    html += "<input type=\"radio\" name=" + paperByAreaNameList[i].paperId + " id=\"optionB\" value=" + paperByAreaNameList[i].optionBscore + ">" + paperByAreaNameList[i].optionB + "";
+                    html += "</td>";
+
+                    html += "<td>";
+                    html += "<input type=\"radio\" name=" + paperByAreaNameList[i].paperId + " id=\"optionC\" value=" + paperByAreaNameList[i].optionCscore + ">" + paperByAreaNameList[i].optionC + "";
+                    html += "</td>";
+
+                    html += "<td>";
+                    html += "<input type=\"radio\" name=" + paperByAreaNameList[i].paperId + " id=\"optionD\" value=" + paperByAreaNameList[i].optionDscore + ">" + paperByAreaNameList[i].optionD + "";
+                    html += "</td>";
+
+                    html += "</tr>"
+                }
+                $("#paperTb").html(html);
+                $("#paperCount").html(counts);
+            }
+        });
+    }
+
+    //上一页
+    $("#prev").click(function () {
+        if (page > 1) {
+            page--;
+            findPaperByAreaName()
+        } else {
+            alert("已经是第一页")
+        }
+    });
+
+    //下一页
+    $("#next").click(function () {
+        if (page < pageSize) {
+            page++;
+            findPaperByAreaName()
+        } else {
+            alert("已经是最后一页")
+        }
+
+    })
+
+
+    //打开添加窗口
+    function openAddWin() {
+        //清空添加窗口的记录
+        $("#addForm")[0].reset()
+        $("#addWin").fadeIn(500)
+    }
+
+    //关闭添加窗口
+    function cancelAdd() {
+        $("#addWin").fadeOut()
+    }
+
+    //新增题目内容及选项内容信息
+    function addPaperMsg() {
+        if (cont!=null && Score!=null && optionA!=null && optionB!=null && optionC!=null && optionD!=null){
+            $.ajax({
+                url:"tblPaper/addPaperMsg",
+                data:$("#addForm").serialize(),
+                dataType:"json",
+                success:function (i) {
+                    if (i==1){
+                        alert("新增成功")
+                    }else if (i==2){
+                        alert("领域选择不能为空")
+                    }else {
+                        alert("新增失败")
+                    }
+                    cancelAdd();
+                    findPaperByAreaName();
+                }
+            });
+        }else {
+            alert("有空的填入，新增失败")
+        }
+
+    }
+
+
+    //打开修改窗口
+    function openUpdateWin(paperId) {
+
+        //清空添加窗口的记录
+        $("#updateForm")[0].reset()
+        $("#updateWin").fadeIn(500)
+
+        localStorage.setItem("paperId",paperId);
+        //回显信息到输入框
+        $.ajax({
+            url:"tblPaper/findPaperMsgById",
+            data:"&paperId="+paperId,
+            dataType:"json",
+            success:function (paperMsgByIdList) {
+                $("#updatepaperContent").val(paperMsgByIdList[0].paperContent);
+                $("#updatepaperscore").val(paperMsgByIdList[0].paperscore);
+                $("#updateoptionA").val(paperMsgByIdList[0].optionA);
+                $("#updateoptionB").val(paperMsgByIdList[0].optionB);
+                $("#updateoptionC").val(paperMsgByIdList[0].optionC);
+                $("#updateoptionD").val(paperMsgByIdList[0].optionD);
+            }
+        });
+    }
+
+    //关闭修改窗口
+    function updateCancelAdd() {
+        $("#updateWin").fadeOut()
+    }
+
+    //根据所选的题目修改对应信息
+    function updatePaperMsg() {
+        var paperId = localStorage.getItem("paperId");
+        // console.log(paperId)
+        if (updatecont!=null && updateScore!=null && updateoptionA!=null && updateoptionB!=null && updateoptionC!=null && updateoptionD!=null){
+            $.ajax({
+                url:"tblPaper/updatePaperMsg",
+                data:$("#updateForm").serialize()+"&paperId="+paperId,
+                dataType:"json",
+                success:function (i) {
+                    if (i==1){
+                        alert("修改成功")
+                    }else if (i==2){
+                        alert("领域选择不能为空")
+                    }else {
+                        alert("修改失败")
+                    }
+                    updateCancelAdd();
+                    findPaperByAreaName();
+                }
+            });
+        }else {
+            alert("填入不能为空记得填满")
+        }
+    }
+
+    //删除题目及其相关信息
+    function isDel(paperId) {
+        layer.open({
+            title: '确认删除'
+            ,content: '是否确认删除'
+            ,btn: ['是', '否']
+            ,yes: function(){
+                $.ajax({
+                    url: "tblPaper/delPaperMsgByPId",
+                    data:{"paperId":paperId},
+                    dataType: "json",
+                    success:function (i) {
+                        if (i>0){
+                            alert("删除题目及其相关信息成功");
+                            $(location).attr('href', 'paperAdmin');
+                        }else {
+                            alert("删除失败");
+                        }
+                    }
+                })
+            }
+            ,btn2: function(){
+                //否按钮关闭回调
+                //return false 开启该代码可禁止点击该按钮关闭
+            }
+            ,cancel: function(){
+                //右上角关闭回调
+                //return false 开启该代码可禁止点击该按钮关闭
+            }
+        });
+    }
+
+
+    //新增题目及相关信息不能为空的判断
+    var cont;
+    function checkContext(e) {
+        cont = e.value;
+        document.getElementById("context");
+        if (cont=== '') {
+            context.innerHTML = "题目不能为空"
+            context.style.display = "block"
+        } else {
+            context.style.display = "none"
+        }
+    }
+
+    var Score;
+    function checkScore(e) {
+        Score = e.value;
+        document.getElementById("testScore");
+        if (Score=== '') {
+            testScore.innerHTML = "题目分数不能为空"
+            testScore.style.display = "block"
+        } else {
+            testScore.style.display = "none"
+        }
+    }
+
+    var optionA;
+    function checkA(e) {
+        optionA = e.value;
+        document.getElementById("A");
+        if (optionA=== '') {
+            A.innerHTML = "选项内容不能为空"
+            A.style.display = "block"
+        } else {
+            A.style.display = "none"
+        }
+    }
+
+    var optionB;
+    function checkB(e) {
+        optionB = e.value;
+        document.getElementById("B");
+        if (optionB=== '') {
+            B.innerHTML = "选项内容不能为空"
+            B.style.display = "block"
+        } else {
+            B.style.display = "none"
+        }
+    }
+
+    var optionC;
+    function checkC(e) {
+        optionC = e.value;
+        document.getElementById("C");
+        if (optionC=== '') {
+            C.innerHTML = "选项内容不能为空"
+            C.style.display = "block"
+        } else {
+            C.style.display = "none"
+        }
+    }
+
+    var optionD;
+    function checkD(e) {
+        optionD = e.value;
+        document.getElementById("D");
+        if (optionD=== '') {
+            D.innerHTML = "选项内容不能为空"
+            D.style.display = "block"
+        } else {
+            D.style.display = "none"
+        }
+    }
+
+
+    //修改题目及相关信息不能为空的判断
+    var updatecont;
+    function checkupdateContext(e) {
+        updatecont = e.value;
+        document.getElementById("updatecontext");
+        if (updatecont=== '') {
+            updatecontext.innerHTML = "题目不能为空"
+            updatecontext.style.display = "block"
+        } else {
+            updatecontext.style.display = "none"
+        }
+    }
+
+    var updateScore;
+    function checkupdateScore(e) {
+        updateScore = e.value;
+        document.getElementById("updatetestScore");
+        if (updateScore=== '') {
+            updatetestScore.innerHTML = "题目分数不能为空"
+            updatetestScore.style.display = "block"
+        } else {
+            updatetestScore.style.display = "none"
+        }
+    }
+
+    var updateoptionA;
+    function checkupdateA(e) {
+        updateoptionA = e.value;
+        document.getElementById("updateA");
+        if (updateoptionA=== '') {
+            updateA.innerHTML = "选项内容不能为空"
+            updateA.style.display = "block"
+        } else {
+            updateA.style.display = "none"
+        }
+    }
+
+    var updateoptionB;
+    function checkupdateB(e) {
+        updateoptionB = e.value;
+        document.getElementById("updateB");
+        if (optionB=== '') {
+            updateB.innerHTML = "选项内容不能为空"
+            B.style.display = "block"
+        } else {
+            B.style.display = "none"
+        }
+    }
+
+    var updateoptionC;
+    function checkupdateC(e) {
+        updateoptionC = e.value;
+        document.getElementById("updateC");
+        if (updateoptionC=== '') {
+            updateC.innerHTML = "选项内容不能为空"
+            updateC.style.display = "block"
+        } else {
+            updateC.style.display = "none"
+        }
+    }
+
+    var updateoptionD;
+    function checkupdateD(e) {
+        updateoptionD = e.value;
+        document.getElementById("updateD");
+        if (updateoptionD=== '') {
+            updateD.innerHTML = "选项内容不能为空"
+            updateD.style.display = "block"
+        } else {
+            updateD.style.display = "none"
+        }
+    }
+
+</script>
+</html>

@@ -1,0 +1,174 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+/* 头部 */
+#header {
+	height: 150px;
+	background-color: antiquewhite;
+	background-image: url('../imgs/header.png');
+	background-repeat: no-repeat;
+	background-position: right;
+	/* 顺时针，上，右，下，左 */
+	padding: 5px 150px 5px 150px;
+}
+
+#header>#header-top {
+	height: 50px;
+	background-color: Gainsboro;
+}
+
+/* 下划线设置为没有 */
+a {
+	text-decoration: none;
+}
+
+/* 按住时 */
+a:active {
+	color: white;
+}
+
+/* 鼠标移过去时 */
+a:hover {
+	font-size: 15px;
+	color: red;
+}
+
+#header>#header-search {
+	height: 100px;
+	background-color: white;
+}
+
+#header-search>.box {
+	width: 450px;
+	height: 45px;
+	position: relative;
+	margin: auto auto auto 300px;
+	border: solid silver 0.5px;
+	/* border-radius: 10px 10px 10px 10px; */
+}
+
+#header-search>.box>#text {
+	width: 450px;
+	height: 45px;
+	font-size: 19px;
+	/* border-radius: 10px 10px 10px 10px; */
+	border: solid silver 0.5px;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+
+}
+
+#header-search>.box>#search {
+	width: 77px;
+	height: 41px;
+	font-size: 20px;
+	/* border-radius: 10px 10px 10px 10px; */
+	position: absolute;
+	right: 0px;
+	top: 3px;
+}
+
+/* 内容区域 */
+#content {
+	margin: auto;
+	height: 2000px;
+	background-color: Gainsboro;
+	padding: 5px 150px 5px 150px;
+}
+
+#bonner {
+	height: 400px;
+	background-color: aliceblue;
+}
+
+#bonner>div {
+	background-color: white;
+	margin-right: 11px;
+	width: 100px;
+	height: 100%;
+	float: left;
+}
+
+#bonner>.one {
+	width: 225px;
+}
+
+#bonner>.one>#images {
+	margin-left: 20px;
+}
+
+#bonner>.one>#center {
+	/* background-color: pink; */
+}
+
+#bonner>.one>#bottom {
+	margin-left: 50px;
+}
+
+#bonner>.three {
+	width: 500px;
+}
+
+#bonner1 {
+	margin-top: 50px;
+	height: 400px;
+	background-color: aliceblue;
+}
+
+#bonner1>div {
+	background-color: white;
+	margin-right: 11px;
+	width: 100px;
+	height: 100%;
+	float: left;
+}
+
+#bonner1>.one {
+	width: 225px;
+}
+
+#bonner2 {
+	margin-top: 50px;
+	height: auto;
+	background-color: aliceblue;
+}
+
+#bonner2>div {
+	background-color: white;
+	margin-right: 11px;
+	width: 100px;
+	height: 100%;
+	/* float: right; */
+	display: inline-block;
+}
+
+#bonner2>.one {
+	width: 225px;
+}
+
+#bonner2>.one>a:hover {
+	box-shadow: 4px 20px 40px 5px rgba(0, 0, 0, .1);
+	opacity: 0.5;
+}
+
+
+
+/* 右侧 */
+#right {
+	width: 50px;
+	height: 300px;
+	background-color: white;
+	position: fixed;
+	right: 0;
+	top: 50%;
+	margin-top: -100px;
+}
+
+/* 底部 */
+#footer {
+	height: auto;
+	background-color: Gainsboro;
+}

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>区域管理</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+</head>
+<body>
+    <h1>区域管理</h1>
+    <div style="width: 80%;margin: auto">
+        <button onclick="openAddWin()">增加</button>
+        <form id="form1">
+            <input type="hidden" name="action" value="findRegionList">
+            <select id="province" name="province" onchange="findRegionByParentId(this.value,'city')">
+                <option value='-1'>请选择省</option>
+            </select>
+
+            <select id="city" name="city">
+                <option value='-1'>请选择市</option>
+            </select>
+
+            <input type="text" placeholder="区域名称" id="area" name="area">
+            <select id="regionStatus" name="regionStatus">
+                <option value='-1'>请选择状态</option>
+                <option value='1'>正常</option>
+                <option value='0'>异常</option>
+            </select>
+            <button type="button" onclick="findByCondition()">查询</button>
+            <span id="delMsg" style="font-size: 13px;color: red;display: none;"></span>
+
+        </form>
+    </div>
+
+    <table style="width: 80%;line-height: 30px;"border="1" cellpadding="0" cellspacing="0">
+        <tr>
+            <th>区域id</th>
+            <th>省</th>
+            <th>市</th>
+            <th>区</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        <tbody id="tb"></tbody>
+    </table>
+
+    <div style="text-align: center">
+        <button id="prev">上一页</button>
+        <span style="margin: 0px 30px 0px 30px" id="pageMsg"></span>
+        <button id="next">下一页</button>
+    </div>
+
+<!--添加区域的弹窗-->
+    <div id="addWin" style="position: absolute;width: 100vw;height: 100vh;
+		background-color: #00000024;left: 0;top: 0; display: none;">
+        <div style="width: 300px;height: 300px;background-color: aliceblue;
+			margin: auto;
+			margin-top: 200px;text-align: center;padding: 15px;">
+            <h1>添加区域</h1>
+            <form id="addForm">
+                <input type="hidden" name="action" value="addRegion">
+                <table style="width: 80%;line-height: 45px;">
+                    <tr>
+                        <td style="text-align: right;">请选择省：</td>
+                        <td>
+                            <select style="width: 100px;" name="province" id="addProvince" onchange="findRegionByParentId(this.value,'addCity')"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">请选择市：</td>
+                        <td>
+                            <select style="width: 100px;" name="parentId" id="addCity"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">区域名称：</td>
+                        <td>
+                            <input type="text" name="regionName" id="addArea" style="width: 100px;">
+                        </td>
+                    </tr>
+                </table>
+                <button style="margin-top: 20px; margin-right: 50px;" type="button" onclick="addRegion()">确定</button>
+                <button type="button" onclick="cancelAdd()">取消</button>
+            </form>
+        </div>
+    </div>
+
+<!--修改区域的弹窗-->
+    <div id="updateWin" style="position: absolute;width: 100vw;height: 100vh;
+		background-color: #00000024;left: 0;top: 0;display: none;">
+        <div style="width: 300px;height: 300px;background-color: aliceblue;
+			margin: auto;
+			margin-top: 200px;text-align: center;">
+            <h1>修改区域</h1>
+            <form id="updateForm">
+                <p id="pName"></p>
+                <p id="cityName"></p>
+                <input type="hidden" name="action" value="updateArea">
+                <input type="hidden" name="regionId" value="" id="regionId">
+                <input type="text" name="area" id="updateArea" style="width: 100px;">
+                <button type="button" onclick="updateRegion()">确定</button>
+                <button type="button" onclick="cancelUpdate()">取消</button>
+            </form>
+        </div>
+    </div>
+</body>
+<!--<script src="js/bronAJAX.js"></script>-->
+<script src="js/selectRegion.js"></script>
+</html>

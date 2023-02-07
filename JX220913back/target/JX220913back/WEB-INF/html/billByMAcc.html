@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>资金账户</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/layui-v2.6.8/layui/layui.js"></script>
+    <link href="js/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
+</head>
+<body>
+<h1 style="text-align: center">资金账户</h1>
+<h2 id="managerBalanceAdd"></h2>
+<br>
+<h2>业务收入情况：</h2>
+<!--<form id="searchFrom">-->
+<!--&lt;!&ndash;    <input type="hidden" name="page" id="page">&ndash;&gt;-->
+<!--&lt;!&ndash;    <input type="hidden" name="size" id="size">&ndash;&gt;-->
+
+<!--    <input type="text" placeholder="用户账号" name="userAcc">-->
+<!--    <input type="text" placeholder="用户名称" name="userName">-->
+<!--    <select name="userState" id="userState">-->
+<!--        <option value="-1">请选择状态</option>-->
+<!--        <option value="0">禁用</option>-->
+<!--        <option value="1">启用</option>-->
+<!--    </select>-->
+<!--    <button type="button" onclick="searchUser()">查询</button>-->
+<!--</form>-->
+<table class="layui-table">
+    <tr>
+        <th>发生时间</th>
+        <th>客户姓名</th>
+        <th>咨询/预约</th>
+        <th>金额(元)</th>
+    </tr>
+    <tbody id="tb"></tbody>
+</table>
+    <a href="javascript:window.parent.location.href='back'">
+        <button style="width: 200px">返回</button>
+    </a>
+
+
+
+<!--<div style="text-align: center">-->
+<!--    <button id="prev">上一页</button>-->
+<!--    <span style="margin: 0px 30px 0px 30px" id="pageMsg"></span>-->
+<!--    <button id="next">下一页</button>-->
+<!--</div>-->
+</body>
+<script src="js/billByMAcc.js"></script>
+<script></script>
+</html>

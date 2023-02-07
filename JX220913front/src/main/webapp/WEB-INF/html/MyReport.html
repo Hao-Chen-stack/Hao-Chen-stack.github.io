@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>我的报告列表</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="js/layui-v2.6.8/layui/css/layui.css">
+    <!-- 引入 layui.js -->
+    <script src="js/layui-v2.6.8/layui/layui.js"></script>
+    <script th:src="@{/js/jquery-1.12.4.min.js}"></script>
+    <style type="text/css">
+        .right {
+            position: absolute;
+            right: 0px;
+            width: 300px;
+            border: 3px solid #73AD21;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1 style="text-align: center;">我的报告列表</h1>
+<table class="layui-table" style="width: 100%;line-height: 30px; text-align: center;" cellpadding="0" cellspacing="0">
+<!--    <tr>-->
+<!--        <td>-->
+<!--            <button style="width: 150px;height: 150px;">2017年10月7日<br>评测报告</button>-->
+<!--        </td>-->
+<!--        <td>-->
+<!--            <button style="width: 150px;height: 150px;">2017年10月7日<br>评测报告</button>-->
+<!--        </td>-->
+<!--        <td>-->
+<!--            <button style="width: 150px;height: 150px;">2017年10月7日<br>评测报告</button>-->
+<!--        </td>-->
+<!--        <td>-->
+<!--            <button style="width: 150px;height: 150px;">2017年10月7日<br>评测报告</button>-->
+<!--        </td>-->
+<!--    </tr>-->
+    <tbody id="ReportTb"></tbody>
+</table>
+
+<div style="text-align: center">
+    <button id="prev" class="layui-btn layui-btn-warm">上一页</button>
+    <span style="margin: 0px 30px 0px 30px" id="pageMsg"></span>
+    <button id="next" class="layui-btn layui-btn-warm">下一页</button>
+    <button id="reu" class="layui-btn layui-btn-warm">返回</button>
+</div>
+</body>
+<script>
+    //当前页数，默认从第一页开始
+    var page=1;
+    //每页显示的条数
+    var size=2;
+    //总页数
+    var pageSize;
+
+    //添加用户报告
+    $(function () {
+        findReportListByUAcc();
+    });
+
+    function findReportListByUAcc(){
+        $.ajax({
+            url: "report/findReportListByUAcc",
+            data:{"page":page,"size":size},
+            dataType: "json",
+            success:function (map) {
+                //更新当前页和总页数
+                var counts = map.counts;
+                pageSize = counts%size==0 ? counts/size : parseInt(counts/size)+1;
+                $("#pageMsg").html("第"+page+"页/共"+pageSize+"页")
+                var reportListByUAcc = map.data;
+                var html="";
+                for (var i = 0;i <reportListByUAcc.length;i++){
+
+                    html+="<tr>"
+
+                    html+="<td>"
+                    // html+=reportListByUAcc[i].reportDate
+                    html+="<button style=\"width: 150px;height: 150px;\" onclick='toReportContext("+reportListByUAcc[i].reportId+")'>"+reportListByUAcc[i].reportDate+"<br>评测报告" +reportListByUAcc[i].reportId+"</button>"
+                    html+="</td>"
+
+                    html+="</tr>"
+                }
+                $("#ReportTb").html(html);
+            }
+        });
+    }
+
+    //上一页
+    $("#prev").click(function () {
+        if (page>1){
+            page--;
+            findReportListByUAcc();
+        }else {
+            alert("已经是第一页")
+        }
+    })
+
+    //下一页
+    $("#next").click(function () {
+        if(page<pageSize){
+            page++;
+            findReportListByUAcc();
+        }else {
+            alert("已经是最后一页")
+        }
+
+    })
+
+    //返回首页
+    $("#reu").click(function () {
+        window.parent.location.href='userIndex';
+    })
+
+    //跳转到评测报告界面
+    function toReportContext(reportId) {
+        //在跳转时将参数传递
+        $(location).attr('href', 'ReportContext?reportId='+reportId);
+    }
+
+</script>
+</html>

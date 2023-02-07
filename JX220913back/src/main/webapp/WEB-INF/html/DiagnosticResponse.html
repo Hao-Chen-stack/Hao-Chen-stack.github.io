@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>诊断答复</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <!-- 引入 layui.js -->
+    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <script th:src="@{/js/jquery-1.12.4.min.js}"></script>
+    <style type="text/css">
+
+    </style>
+</head>
+<body>
+<div id="doctorReWin" style="position: absolute;width: 100vw;height: 250vh;
+				background-color: #00000024;left: 0;top: 0; ">
+    <div style="width: 550px;height: auto;background-color: aliceblue;
+					margin: auto;
+					margin-top: 200px;text-align: center;padding: 15px;">
+        <h1>诊断答复</h1>
+        <form id="addDoctorReMsg">
+            <table style="width: 100%;line-height: 45px;">
+                <tr>
+                    <td style="text-align: left;">咨询人：</td>
+                    <td>
+                        <span id="userName"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">领域：</td>
+                    <td>
+                        <span id="areaName"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">预约时间：</td>
+                    <td>
+                        <span id="appointTime"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">问题描述：</td>
+                    <td>
+                        <span id="problem"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">我的答复：</td>
+                    <td>
+                        <textarea id="answer" name="answer" cols="20" rows="10" style="width: 300px;resize: none;overflow: auto;" ></textarea>
+                    </td>
+                </tr>
+            </table>
+            <button type="button" class="layui-btn layui-btn-warm" onclick="cancelAdd()">提交</button>
+        </form>
+    </div>
+</div>
+</body>
+
+<script>
+    //接收跳转传递的数据数据
+    var fUrl = window.location.href;
+    // alert(fUrl)
+    var appointmentId = fUrl.split("?")[1].split("=")[1];
+    // alert(reportId)
+    //加载页面数据
+    $(function () {
+        $.ajax({
+            url: "appointment/findAppointListByAppointId",
+            data:{"appointmentId":appointmentId},
+            async:false,
+            dataType: "json",
+            success:function (appointListByAppointId) {
+                // 集合取元素通过下标
+                $("#userName").append(appointListByAppointId[0].userName);
+                $("#areaName").append(appointListByAppointId[0].areaName);
+                $("#appointTime").append(appointListByAppointId[0].appointmentdate+"---"+appointListByAppointId[0].appointmenttime);
+                $("#problem").append(appointListByAppointId[0].problem);
+                layui.element.init()//渲染
+            }
+        });
+    });
+
+    //提交之后跳转
+    function cancelAdd() {
+        $.ajax({
+            url: "appointment/addAnswer",
+            data:$("#answer").serialize()+"&appointmentId="+appointmentId,
+            dataType: "json",
+            success:function (i) {
+                if (i>0){
+                    alert("回复成功")
+                }else {
+                    alert("回复失败")
+                }
+                $(location).attr('href', 'DoctorAppointList');
+            }
+        });
+        $("#userName").empty();
+        $("#areaName").empty();
+        $("#appointTime").empty();
+        $("#problem").empty();
+        // window.parent.location.href='userIndex';
+    }
+
+</script>
+</html>

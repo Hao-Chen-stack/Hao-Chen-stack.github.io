@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TblgoodsMapper">
+
+    <select id="findGoodsList" resultType="com.cykj.bean.Tblgoods">
+        select * from tblgoods
+    </select>
+</mapper>

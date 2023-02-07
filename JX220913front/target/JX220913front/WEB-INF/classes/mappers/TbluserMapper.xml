@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TbluserMapper">
+
+    <select id="findUser" resultType="java.lang.Integer">
+        select count(*) from tbluser where userAcc=#{userAcc} and userPwd=#{userPwd} and userState=1
+    </select>
+
+    <select id="findAcc" resultType="java.lang.Integer">
+        select count(*) from tbluser where userAcc=#{userAcc}
+    </select>
+
+    <insert id="addUser">
+         insert into tbluser(userAcc,userPwd,userName,userSex,userAge,userPhone,createTime,userState,userAddress) values(#{userAcc},#{userPwd},#{userName},#{userSex},#{userAge},#{userPhone},now(),1,#{userAddress})
+    </insert>
+
+    <select id="findUserNameById" resultType="com.cykj.bean.Tbluser">
+        select userName from tbluser where userId=#{userId}
+    </select>
+
+    <update id="updateUserBalance">
+        update tbluser set userBalance = (userBalance+#{code}) where userAcc = #{userAcc}
+    </update>
+
+    <update id="updateUserBalanceByUAccForPaper">
+        update tbluser set userBalance = (userBalance-100) where userAcc = #{userAcc}
+    </update>
+
+    <select id="findUserBalanceByUAcc" resultType="java.lang.Double">
+        select userBalance from tbluser where userAcc = #{userAcc}
+    </select>
+</mapper>

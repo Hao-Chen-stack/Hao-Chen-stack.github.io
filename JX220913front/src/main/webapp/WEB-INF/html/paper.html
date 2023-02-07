@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <!-- 引入 layui.js -->
+    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <script th:src="@{/js/jquery-1.12.4.min.js}"></script>
+    <style type="text/css">
+
+    </style>
+</head>
+<body>
+<div id="paperMsgWin" style="position: absolute;width: 100vw;height: 250vh;
+				background-color: #00000024;left: 0;top: 0; ">
+    <div style="width: 550px;height: auto;background-color: aliceblue;
+					margin: auto;
+					margin-top: 200px;text-align: center;padding: 15px;">
+        <h1>评估答题</h1>
+        <form id="paper" name="see">
+            <table style="width: 100%;line-height: 45px;">
+<!--                <tr>-->
+<!--                    <td>1.我感到愉快</td>-->
+<!--                    <td><input type="radio" name="option" id="optionA" value="5">偶尔</td>-->
+<!--                    <td><input type="radio" name="option" id="optionB" value="4">有时</td>-->
+<!--                    <td><input type="radio" name="option" id="optionC" value="3">常常</td>-->
+<!--                    <td><input type="radio" name="option" id="optionD" value="2">没有</td>-->
+<!--                </tr>-->
+                <input type="text" id="answer" name="checkResult" hidden value="0" />
+                <tbody id="paperTb"></tbody>
+            </table>
+            <button type="button" class="layui-btn layui-btn-warm">提交</button>
+        </form>
+    </div>
+</div>
+</body>
+
+<script>
+    var areaName = localStorage.getItem("areaName").replace("\"", "").replace("\"", "");
+    var paperLen;
+    var optionAScore;
+    var optionBScore;
+    var optionCScore;
+    var optionDScore;
+
+    alert(areaName)
+    $(function () {
+        findPaperByAreaName(areaName)
+    });
+
+    //生成题目和选项
+    function findPaperByAreaName(areaName) {
+        $.ajax({
+            url: "tblPaper/findPaperByAreaName",
+            data: {"areaName":areaName},
+            dataType: "json",
+            success:function (paperByAreaNameList) {
+                var html="";
+                paperLen = paperByAreaNameList.length;
+                for (var i = 0;i <paperByAreaNameList.length;i++){
+                    optionAScore = paperByAreaNameList[i].optionAscore
+                    optionBScore = paperByAreaNameList[i].optionBscore
+                    optionCScore = paperByAreaNameList[i].optionCscore
+                    optionDScore = paperByAreaNameList[i].optionDscore
+
+                    html+="<tr id="+paperByAreaNameList[i].paperId+">"
+
+                    html+="<td colspan='4' style='text-align: left'>"
+                    html+= paperByAreaNameList[i].paperId+"."+paperByAreaNameList[i].paperContent;
+                    html+="</td>"
+
+                    html+="</tr>"
+
+                    html+="<tr>"
+
+                    html+="<td>"
+                    html+= "<input type=\"radio\" name="+paperByAreaNameList[i].paperId+" id=\"optionA\" value="+paperByAreaNameList[i].optionAscore+">"+paperByAreaNameList[i].optionA+"";
+                    html+="</td>"
+
+                    html+="<td>"
+                    html+= "<input type=\"radio\" name="+paperByAreaNameList[i].paperId+" id=\"optionB\" value="+paperByAreaNameList[i].optionBscore+">"+paperByAreaNameList[i].optionB+"";
+                    html+="</td>"
+
+                    html+="<td>"
+                    html+= "<input type=\"radio\" name="+paperByAreaNameList[i].paperId+" id=\"optionC\" value="+paperByAreaNameList[i].optionCscore+">"+paperByAreaNameList[i].optionC+"";
+                    html+="</td>"
+
+                    html+="<td>"
+                    html+= "<input type=\"radio\" name="+paperByAreaNameList[i].paperId+" id=\"optionD\" value="+paperByAreaNameList[i].optionDscore+">"+paperByAreaNameList[i].optionD+"";
+                    html+="</td>"
+
+                    html+="</tr>"
+            }
+                $("#paperTb").html(html);
+            }
+        });
+    }
+
+    //点击按钮时捕获所选项的分数和并且提交跳转
+    $("button").on('click', function () {
+        $.ajax({
+            url:"user/findUserBalanceByUAcc",
+            dataType:"json",
+            success:function (i) {
+                if (i>0){
+                    $("#paperTb input[type=radio]:checked").each(function(){
+                            var oldScore = parseInt(document.getElementById("answer").value)
+                            document.getElementById("answer").value=oldScore+parseInt($(this).val());
+                        }
+                    );
+
+                    var newScore = document.getElementById("answer").value;
+
+                    if ($("#paperTb input[type=radio]:checked").length===paperLen){
+                        alert("总分为"+newScore);
+
+                        var reportContent = '';
+                        var reportResults = '';
+                        if (newScore<=paperLen*optionDScore){
+                            reportContent="您精神健康"
+                            reportResults="健康"
+                        }else if (newScore>paperLen*optionDScore && newScore<=optionCScore*paperLen){
+                            reportContent="问题不大，注意休息"
+                            reportResults="轻度问题"
+                        }else if (newScore>optionCScore*paperLen && newScore<=optionBScore*paperLen){
+                            reportContent="建议咨询医生，当面问诊"
+                            reportResults="中度问题"
+                        }else if (newScore>=optionBScore*paperLen){
+                            reportContent="严重，火速联系我们"
+                            reportResults="重度问题"
+                        }
+                        $.ajax({
+                            url:"report/addReportMsg",
+                            data:{"reportContent":reportContent,"reportResults":reportResults,"areaName":areaName,"paperScore":newScore},
+                            dataType: "json",
+                            success:function (i) {
+                                if (i>0){
+                                    updateUserBalanceByUAccForPaper();
+                                    alert("生成报告成功")
+                                }else {
+                                    alert("生成报告失败")
+                                }
+                                window.parent.location.href='userIndex';
+                            }
+                        })
+                    }else {
+                        alert("请先做完未做的题目")
+                    }
+                }else {
+                    alert("您的余额不足，请先充值")
+                }
+            }
+        })
+
+    });
+
+    //答题扣费
+    function updateUserBalanceByUAccForPaper() {
+        $.ajax({
+            url:"user/updateUserBalanceByUAccForPaper",
+            // data:"",
+            dataType:"json",
+            success:function (i) {
+                if (i>0){
+                    alert("已成功扣费")
+                }else {
+                    alert("扣费失败,余额不足请先充值")
+                }
+            }
+
+        })
+
+    }
+
+</script>
+</html>

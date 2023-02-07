@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>登录界面</title>
+</head>
+<body>
+<form action="manager" method="get">
+    <!-- 隐藏域 -->
+    <input type="hidden" name="id" value="1">
+    <input type="hidden" name="action" value="login">
+<a href="https://www.jd.com/"><img src="imgs/jingdong.png" alt=""></a>
+<br>
+<a href="https://wj-dongjian.jd.com/q/61a05143f2ec2b00b35e40a6"><img src="imgs/diaochawenjuan.png" alt="" style="margin-right: 50px;"></a>
+<table style="margin:0 auto; margin-top: 100px;">
+    <tr>
+        <td>扫码登录</td>
+        <td style="text-align: center; color: red;">账户登录</td>
+    </tr>
+    <tr>
+        <td colspan="2"><hr></td>
+    </tr>
+    <tr>
+        <td>
+            <img src="imgs/userAcc.png" alt="">
+        </td>
+        <td>
+            <!-- 账号输入框 -->
+            <input type="text" placeholder="邮箱/账号名/登录手机" style="height: 47px; width: 250px;" name = "acc" >
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="imgs/userPwd.png" alt="">
+        </td>
+        <td>
+            <!-- 密码输入框 -->
+            <input type="password" placeholder="密码" style="height: 47px; width: 250px;" name = "pwd" >
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="imgs/userPwd.png" alt="">
+        </td>
+        <td>
+            <!-- 验证码输入框 -->
+            <input type="password" placeholder="验证码" style="height: 47px; width: 250px;" name = "code" >
+        </td>
+    </tr>
+    <!-- 忘记密码 -->
+    <tr style="text-align: right;">
+        <td></td>
+        <td><a href="">忘记密码</a></td>
+    </tr>
+    <!-- 登录按钮 -->
+    <tr>
+        <td colspan="2">
+            <input type="submit" value="登&nbsp;&nbsp;&nbsp;录" style="height: 50px; width: 315px; font-size: 20px; background-color: red; color: white ; border: 0;">
+        </td>
+    </tr>
+    <tr style="height: 20px;">
+    </tr>
+    <tr>
+        <td colspan="2"><hr></td>
+    </tr>
+    <tr>
+        <td><img src="imgs/qq.png" alt=""><a href="">QQ</a></td>
+        <td>&nbsp;|&nbsp;<img src="imgs/wechat.png" alt="" ><a href="">微信</a></td>
+        <td><img src="imgs/jiantou.png" alt=""><a href="logon.html">立即注册</a></td>
+    </tr>
+</table>
+</form>
+</body>
+</html>

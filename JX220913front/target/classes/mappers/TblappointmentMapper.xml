@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TblappointmentMapper">
+
+    <select id="findAppointList" resultType="com.cykj.bean.Tblappointment">
+        select a.*,b.areaName from tblappointment a inner join tblarea b
+        where a.areaId=b.areaId
+        and userId =(select userId from tbluser where userAcc = #{tblappointment.userAcc})
+        limit #{page},#{size}
+    </select>
+
+    <select id="findAppointCount" resultType="java.lang.Integer">
+        select count(*) from tblappointment a inner join tblarea b
+        where a.areaId=b.areaId
+        and userId =(select userId from tbluser where userAcc = #{userAcc})
+    </select>
+
+    <select id="findRealName" resultType="com.cykj.bean.Tblmanager">
+        select * from tblmanager where managerId in (select managerId from tblarea where areaName = #{areaName})
+    </select>
+
+    <select id="doctorMsg" resultType="com.cykj.bean.Tblmanager">
+        select * from tblmanager where managerAcc = #{managerAcc}
+    </select>
+
+    <insert id="addUserCheckMsg">
+        insert into tblappointment(userId,areaId,managerAcc,appointmentdate,appointmenttime,appointstate,problem,appointCost)
+        values((select userId from tbluser where userAcc = #{userAcc}),
+				(select areaId from tblarea where areaName = #{areaName}
+				and managerId = (select managerId from tblmanager where managerAcc = #{managerAcc})),
+				#{managerAcc},
+				#{appointmentdate},
+				#{appointmenttime},
+				'已预约',
+				#{problem},
+				(select price from tblmanager where managerAcc = #{managerAcc}))
+
+
+    </insert>
+
+    <update id="updateWorkTimeState">
+        update tblworktime set timeState = #{timeState}
+    </update>
+
+    <select id="findAppointListByAppointId" resultType="com.cykj.bean.Tblappointment">
+        select a.*,b.areaName from tblappointment a inner join tblarea b
+        where a.areaId=b.areaId
+        and appointmentId = #{appointmentId}
+    </select>
+
+    <update id="updateCompleteTimeByAppointmentId">
+        update tblappointment set completeTime = (select now()) where appointmentId = #{appointmentId}
+    </update>
+
+    <select id="showWinByStopForUser" resultType="com.cykj.bean.Tblappointment">
+        select a.*,u.userName,ar.areaName from tblappointment a inner join tbluser u inner join tblarea ar
+        where
+        a.userId = u.userId
+        and a.areaId = ar.areaId
+        and appointstate = '已终止' and userAcc = #{userAcc} and userStopAns != 1
+    </select>
+
+    <select id="stopAppointCount" resultType="java.lang.Integer">
+        select count(*) from tblappointment a inner join tbluser u inner join tblarea ar
+        where
+        a.userId = u.userId
+        and a.areaId = ar.areaId
+        and appointstate = '已终止' and userAcc = #{userAcc} and userStopAns != 1
+    </select>
+
+    <update id="updateUserStopAns">
+        update tblappointment set userStopAns = 1 where appointstate = '已终止' and userId = (select userId from tbluser where userAcc = #{userAcc})
+    </update>
+</mapper>

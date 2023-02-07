@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TblreportMapper">
+
+    <select id="findReportListBySomeCondition" resultType="com.cykj.bean.Tblreport">
+        select r.*,u.userName from tblreport r inner join tbluser u
+        <where>
+            and r.userId = u.userId
+            <if test="tblreport.startDate !=null and tblreport.startDate !='' and tblreport.endDate !=null and tblreport.endDate !=''">
+                and r.reportDate BETWEEN #{tblreport.startDate} and #{tblreport.endDate}
+            </if>
+
+            <if test="tblreport.minScore !=null and tblreport.minScore!='' and tblreport.maxScore !=null and tblreport.maxScore!=''">
+                and r.paperscore BETWEEN #{tblreport.minScore} and #{tblreport.maxScore}
+            </if>
+            order by date(r.reportDate)desc
+        </where>
+        limit #{page},#{size}
+    </select>
+
+    <select id="findReportCountBySomeCondition" resultType="java.lang.Integer">
+        select count(*) from tblreport r inner join tbluser u
+        <where>
+            and r.userId = u.userId
+            <if test="tblreport.startDate !=null and tblreport.startDate !='' and tblreport.endDate !=null and tblreport.endDate !=''">
+                and r.reportDate BETWEEN #{tblreport.startDate} and #{tblreport.endDate}
+            </if>
+
+            <if test="tblreport.minScore !=0 and tblreport.minScore!='' and tblreport.maxScore !=0 and tblreport.maxScore!=''">
+                and r.paperscore BETWEEN #{tblreport.minScore} and #{tblreport.maxScore}
+            </if>
+            order by date(r.reportDate)desc
+        </where>
+    </select>
+
+    <select id="findContextAndResByRId" resultType="com.cykj.bean.Tblreport">
+        select * from tblreport where reportId = #{reportId}
+    </select>
+</mapper>

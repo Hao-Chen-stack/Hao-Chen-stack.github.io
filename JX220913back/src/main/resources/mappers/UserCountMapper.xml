@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.UserCountMapper">
+
+    <select id="findWeekNowList" resultType="com.cykj.bean.Tbluser">
+        select a.week,ifnull(b.userNum,0) userNum from
+        (
+        select "周一" as week
+        union
+        select "周二"
+        union
+        select "周三"
+        union
+        select "周四"
+        union
+        select "周五"
+        union
+        select "周六"
+        union
+        select "周日"
+        )a
+        left join
+        (
+        SELECT CASE DATE_FORMAT(createtime,'%w')
+        WHEN 1 THEN '周一'
+        WHEN 2 THEN '周二'
+        WHEN 3 THEN '周三'
+        WHEN 4 THEN '周四'
+        WHEN 5 THEN '周五'
+        WHEN 6 THEN '周六'
+        WHEN 0 THEN '周日'
+        END
+        as week,count(*) as userNum FROM tbluser WHERE YEARWEEK(date_format(createtime,'%Y-%m-%d'),1) = YEARWEEK(NOW(),1) group by day(createtime) order by createtime Desc
+        )b
+        on a.week=b.week
+    </select>
+
+    <select id="findMonthNowList" resultType="com.cykj.bean.Tbluser">
+        select a.week,ifnull(b.userNum,0) userNum from
+        (
+        select "第一周" as week
+        union
+        select "第二周"
+        union
+        select "第三周"
+        union
+        select "第四周"
+        union
+        select "第五周"
+        union
+        select "第六周"
+        )a
+        left join
+        (
+        SELECT CASE CEILING((DAY(createtime)+WEEKDAY(createtime-INTERVAL DAY(createtime)-1 DAY))/7)
+        WHEN 1 THEN '第一周'
+        WHEN 2 THEN '第二周'
+        WHEN 3 THEN '第三周'
+        WHEN 4 THEN '第四周'
+        WHEN 5 THEN '第五周'
+        WHEN 6 THEN '第六周'
+        END as week,count(*) as userNum
+        FROM tbluser WHERE DATE_FORMAT(createtime,'%Y-%m-%d' )&gt;= (SELECT concat(date_format(LAST_DAY(now()),'%Y-%m-'),'01'))and DATE_FORMAT(createtime,'%Y-%m-%d' ) &lt;=(SELECT LAST_DAY(now())) group by week
+        )b
+        on a.week=b.week
+    </select>
+
+
+    <select id="findHalfYearNowList" resultType="com.cykj.bean.Tbluser">
+        select a.yearMonth,ifnull(b.userNum,0) userNum from
+        (
+        <foreach collection="yearMonths" item="singleYearMonth" index="i">
+            <if test=" i == 0">
+                select #{singleYearMonth} as yearMonth
+            </if>
+            <if test="i != 0">
+                union
+                select #{singleYearMonth}
+            </if>
+        </foreach>
+         ) a
+        left join
+        (
+        select CASE DATE_FORMAT(createtime,'%Y-%m')
+        <foreach collection="yearMonths" item="singleYearMonth">
+            WHEN #{singleYearMonth} THEN #{singleYearMonth}
+        </foreach>
+        END as yearMonth, count(*) as userNum
+        from tbluser where createtime between date_sub(now(),interval 5 month) and now() group by month(createtime)
+        ) b
+        on a.yearMonth=b.yearMonth ORDER BY a.yearMonth
+    </select>
+
+</mapper>

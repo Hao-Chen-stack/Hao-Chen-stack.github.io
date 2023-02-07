@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TblpowerMapper">
+
+    <select id="findRoleList" resultType="com.cykj.bean.Tblrole">
+        select * from tblrole
+    </select>
+
+    <select id="findDistributedPower" resultType="com.cykj.bean.Tblpower">
+        select * from tblpower where powerid in(select powerid from tblrolepower where roleid=(select roleid from tblmanager where managerAcc=#{managerAcc}))
+    </select>
+
+    <select id="findDistributedPowerByroleid" resultType="com.cykj.bean.Tblpower">
+        select * from tblpower where powerid in(select powerid from tblrolepower where roleid=#{roleid})
+    </select>
+
+    <select id="findUnDistributedPower" resultType="com.cykj.bean.Tblpower">
+        select * from tblpower where powerid not in(select powerid from tblrolepower where roleid=#{roleid}) and parentId >0
+    </select>
+
+    <select id="findUnDistributedPower_parent" resultType="com.cykj.bean.Tblpower">
+        select * from tblpower where powerid in
+            <foreach collection="childList" item="power" separator="," open="(" close=")">
+                #{power.parentId}
+            </foreach>
+
+    </select>
+
+    <select id="findUnDisPowerByRid" resultType="com.cykj.bean.Tblpower">
+        select * from tblpower where powerid not in(select powerid from tblrolepower where roleid= #{roleid})
+    </select>
+
+    <insert id="addAllDisPower">
+        insert into tblrolepower values
+        <foreach collection="powerid" item="powerid" separator=",">
+            (null,#{roleid},#{powerid.powerid})
+        </foreach>
+    </insert>
+
+    <delete id="cancelDisPowerAll">
+        delete from tblrolepower where roleid= #{roleid}
+    </delete>
+
+    <insert id="addCheckUnDisPower">
+        insert into tblrolepower values
+        <foreach collection="powerid" item="powerid" separator=",">
+            (null,#{roleid},#{powerid})
+        </foreach>
+    </insert>
+
+    <delete id="cancelCheckDisPower">
+        delete from tblrolepower where roleid =#{roleid} and powerid in
+        <foreach collection="havepowerid" item="powerid" separator="," open="(" close=")">
+            #{powerid}
+        </foreach>
+    </delete>
+
+
+</mapper>

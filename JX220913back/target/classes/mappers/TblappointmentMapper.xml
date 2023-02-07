@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TblappointmentMapper">
+
+    <select id="findAppointListByMAcc" resultType="com.cykj.bean.Tblappointment">
+        select a.*,u.userName,ar.areaName from tblappointment a inner join tbluser u
+        inner join tblarea ar
+        <where>
+            and a.userId = u.userId
+            and a.areaId = ar.areaId
+            <if test="tblappointment.startDate !=null and tblappointment.startDate !='' and tblappointment.endDate !=null and tblappointment.endDate !=''">
+                and a.appointmentdate BETWEEN #{startDate} and #{endDate}
+            </if>
+
+            <if test="tblappointment.appointstate !=null and tblappointment.appointstate !=''">
+                and a.appointstate = #{tblappointment.appointstate}
+            </if>
+            and a.managerAcc = #{tblappointment.managerAcc} order by date(a.appointmentdate)desc
+        </where>
+        limit #{page},#{size}
+    </select>
+
+    <select id="findAppointCount" resultType="java.lang.Integer">
+        select count(*) from tblappointment a inner join tbluser u
+        inner join tblarea ar
+        <where>
+            and a.userId = u.userId
+            and a.areaId = ar.areaId
+            <if test="tblappointment.startDate !=null and tblappointment.startDate !='' and tblappointment.endDate !=null and tblappointment.endDate !=''">
+                and a.appointmentdate BETWEEN #{startDate} and #{endDate}
+            </if>
+
+            <if test="tblappointment.appointstate !=null and tblappointment.appointstate !=''">
+                and a.appointstate = #{tblappointment.appointstate}
+            </if>
+            and a.managerAcc = #{tblappointment.managerAcc} order by date(a.appointmentdate)desc
+        </where>
+    </select>
+
+    <select id="findAppointListByAppointId" resultType="com.cykj.bean.Tblappointment">
+        select a.*,b.areaName,u.userName from tblappointment a inner join tblarea b inner join tbluser u
+        where a.areaId=b.areaId
+		and a.userId = u.userId
+        and appointmentId = #{appointmentId}
+    </select>
+
+    <update id="updateAnswerByAppointId">
+        update tblappointment set answer = #{answer},appointstate = '已诊断' where appointmentId = #{appointmentId}
+    </update>
+
+    <update id="updateAppointStateByAppointId">
+        update tblappointment set appointstate = '已确认' where appointmentId = #{appointmentId}
+    </update>
+
+    <update id="updateAppointStateByUId">
+        update tblappointment set appointstate = '预约失败' where appointmentId = #{appointmentId}
+    </update>
+
+    <select id="findAppointListBySomeCondition" resultType="com.cykj.bean.Tblappointment">
+        select a.*,u.userName,u.userAcc,ar.areaName,m.realName from tblappointment a inner join tbluser u
+        inner join tblarea ar
+        inner join tblmanager m
+        <where>
+            and a.userId = u.userId
+            and a.areaId = ar.areaId
+            and a.managerAcc = m.managerAcc
+            <if test="tblappointment.startDate !=null and tblappointment.startDate !='' and tblappointment.endDate !=null and tblappointment.endDate !=''">
+                and a.appointmentdate BETWEEN #{startDate} and #{endDate}
+            </if>
+
+            <if test="tblappointment.appointstate !=null and tblappointment.appointstate !=''">
+                and a.appointstate = #{tblappointment.appointstate}
+            </if>
+
+            <if test="tblappointment.userAcc !=null and tblappointment.userAcc !=''">
+                and u.userAcc like concat('%',#{tblappointment.userAcc},'%')
+            </if>
+
+            <if test="tblappointment.managerAcc !=null and tblappointment.managerAcc !=''">
+                and a.managerAcc like concat('%',#{tblappointment.managerAcc},'%')
+            </if>
+            order by date(a.appointmentdate)desc
+        </where>
+        limit #{page},#{size}
+    </select>
+
+    <select id="findAppointListCountBySomeCondition" resultType="java.lang.Integer">
+        select count(*) from tblappointment a inner join tbluser u
+        inner join tblarea ar
+        inner join tblmanager m
+        <where>
+            and a.userId = u.userId
+            and a.areaId = ar.areaId
+            and a.managerAcc = m.managerAcc
+            <if test="tblappointment.startDate !=null and tblappointment.startDate !='' and tblappointment.endDate !=null and tblappointment.endDate !=''">
+                and a.appointmentdate BETWEEN #{startDate} and #{endDate}
+            </if>
+
+            <if test="tblappointment.appointstate !=null and tblappointment.appointstate !=''">
+                and a.appointstate = #{tblappointment.appointstate}
+            </if>
+
+            <if test="tblappointment.userAcc !=null and tblappointment.userAcc !=''">
+                and u.userAcc like concat('%',#{tblappointment.userAcc},'%')
+            </if>
+
+            <if test="tblappointment.managerAcc !=null and tblappointment.managerAcc !=''">
+                and a.managerAcc like concat('%',#{tblappointment.managerAcc},'%')
+            </if>
+            order by date(a.appointmentdate)desc
+        </where>
+    </select>
+
+    <update id="updateAppointStateToStopByUId">
+        update tblappointment set appointstate = '已终止' where appointmentId = #{appointmentId}
+    </update>
+
+    <select id="showWinByStopForDoctor" resultType="com.cykj.bean.Tblappointment">
+        select a.*,u.userName,ar.areaName from tblappointment a inner join tbluser u inner join tblarea ar
+        where
+        a.userId = u.userId
+        and a.areaId = ar.areaId
+        and appointstate = '已终止' and managerAcc = #{managerAcc} and managerStopAns != 1
+    </select>
+
+    <select id="stopAppointCount" resultType="java.lang.Integer">
+        select count(*) from tblappointment a inner join tbluser u inner join tblarea ar
+        where
+        a.userId = u.userId
+        and a.areaId = ar.areaId
+        and appointstate = '已终止' and managerAcc = #{managerAcc} and managerStopAns != 1
+    </select>
+
+    <update id="updateManagerStopAns">
+        update tblappointment set managerStopAns = 1 where appointstate = '已终止' and managerAcc = #{managerAcc}
+    </update>
+
+    <select id="findDoctorAppointCount" resultType="com.cykj.bean.Tblappointment">
+        select a.realName,ifnull(b.appointCounts,0) appointCounts from
+        (select * from tblmanager where roleid=2) a
+        left join
+        (select managerAcc,appointmentdate,count(*) as appointCounts from tblappointment where appointstate in('已预约','已诊断','已确认','已评价') GROUP BY managerAcc) b
+        on a.managerAcc=b.managerAcc
+        <where>
+            <if test="tblappointment.startDate !=null and tblappointment.startDate !='' and tblappointment.endDate !=null and tblappointment.endDate !=''">
+                and b.appointmentdate BETWEEN #{startDate} and #{endDate}
+            </if>
+        </where>
+    </select>
+
+</mapper>

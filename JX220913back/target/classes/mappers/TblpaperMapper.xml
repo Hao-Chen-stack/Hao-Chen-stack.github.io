@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TblpaperMapper">
+
+    <select id="findPaperByAreaName" resultType="com.cykj.bean.Tblpaper">
+        select * from tblpaper
+        <where>
+            <if test="areaName !=null and areaName !=''">
+                and areaName = #{areaName}
+            </if>
+        </where>
+        limit #{page},#{size}
+    </select>
+
+    <select id="findPaperByAreaNameCount" resultType="java.lang.Integer">
+        select count(*) from tblpaper
+        <where>
+            <if test="areaName !=null and areaName !=''">
+                and areaName = #{areaName}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addPaperMsg">
+        insert into tblpaper values(null,#{paperContent},#{paperscore},#{areaName},#{optionA},#{optionB},#{optionC},#{optionD},5,4,3,2)
+    </insert>
+
+    <update id="updatePaperMsg">
+        update tblpaper set paperContent = #{paperContent},
+        paperscore = #{paperscore},
+        areaName = #{areaName},
+        optionA = #{optionA},
+        optionB = #{optionB},
+        optionC = #{optionC},
+        optionD = #{optionD}
+        where paperId = #{paperId}
+    </update>
+
+    <delete id="delPaperMsgByPId">
+       delete from tblpaper where paperId = #{paperId}
+    </delete>
+
+    <select id="findPaperMsgById" resultType="com.cykj.bean.Tblpaper">
+        select * from tblpaper where paperId = #{paperId}
+    </select>
+
+</mapper>

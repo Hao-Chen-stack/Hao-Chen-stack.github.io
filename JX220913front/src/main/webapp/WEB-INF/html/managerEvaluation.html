@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>咨询师评价</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <!-- 引入 layui.js -->
+    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <script th:src="@{/js/jquery-1.12.4.min.js}"></script>
+    <style type="text/css">
+
+    </style>
+</head>
+<body>
+<div id="doctorMsgWin" style="position: absolute;width: 100vw;height: 250vh;
+				background-color: #00000024;left: 0;top: 0; ">
+    <div style="width: 550px;height: auto;background-color: aliceblue;
+					margin: auto;
+					margin-top: 200px;text-align: center;padding: 15px;">
+        <h1>咨询师评价</h1>
+        <form id="addEvaluate">
+            <table style="width: 100%;line-height: 45px;">
+                <tr>
+                    <td><img width="100px" th:src="@{/img/1.png}" alt="1"></td>
+                    <td>
+                        咨询师姓名: <span id="mName"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        学校名称: <span id="mSchool"></span>
+                    </td>
+                    <td>
+                        职称: <span id="mTitle"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">擅长领域：</td>
+                    <td>
+                        <span id="mSector"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">专业背景：</td>
+                    <td>
+                        <span id="mBackground"></span>
+                    </td>
+                </tr>
+                <tr id="evaluate" style="width: 200px">
+                    <td style="text-align: left; ">评价：</td>
+                    <td>
+                        <textarea placeholder="请输入评价" name="evaluateContext"  id="evaluateContext" rows="" cols="" style="height: 150px; width: 450px;"></textarea>
+
+                    </td>
+                </tr>
+            </table>
+            <button type="button" class="layui-btn layui-btn-warm" onclick="addEvaluate()">提交</button>
+        </form>
+    </div>
+</div>
+</body>
+
+<script src="js/appointmentList.js"></script>
+<script>
+    // var fUrl = window.location.href;
+    // var managerAcc = fUrl.split("?")[1].split("=")[1];
+    var fUrl = window.location.href;
+    var data = decodeURI(fUrl.split("=")[1]);
+    var parse = JSON.parse(data);
+    // console.log(parse)
+    //加载页面数据
+    $(function () {
+        $.ajax({
+            url: "appointment/doctorMsg",
+            data: {"managerAcc":parse.managerAcc},
+            async:false,
+            dataType: "json",
+            success:function (map) {
+                var doctorList = map.doctorMsgList;// 集合
+                var areaList = map.areaNameList;// 集合
+                // 集合取元素通过下标
+                $("#mName").append(doctorList[0].realName)
+                $("#mSchool").append(doctorList[0].school)
+                $("#mTitle").append(doctorList[0].title)
+                $("#mSector").append(areaList[0].areaName)
+                $("#mBackground").append(doctorList[0].background)
+                layui.element.init()//渲染
+            }
+        });
+    });
+
+
+    //提交时插入数据库并返回首页
+    function addEvaluate() {
+        $("#mName").empty()
+        $("#mSchool").empty()
+        $("#mTitle").empty()
+        $("#mSector").empty()
+        $("#mBackground").empty()
+        $.ajax({
+            url: "evaluate/addEvaluate",
+            data:$("#evaluateContext").serialize()+"&managerAcc="+parse.managerAcc,
+            dataType: "json",
+            success:function (i) {
+                if (i>0){
+                    alert("评价成功");
+                    updateAppointState();
+                    updateCompleteTimeByAppointmentId();
+                }else {
+                    alert("评价失败")
+                }
+                window.parent.location.href='userIndex';
+            }
+        });
+    }
+
+    //评价成功时修改预约状态为已评价
+    function updateAppointState() {
+        $.ajax({
+            url: "evaluate/updateAppointState",
+            data:{"appointmentId":parse.appointmentId},
+            dataType: "json",
+            success:function (i) {
+                if (i>0){
+                    alert("预约状态已修改")
+                }else {
+                    alert("预约状态修改失败")
+                }
+            }
+        });
+    }
+
+    //评价成功后当状态修改为已评价后插入完成时间
+    function updateCompleteTimeByAppointmentId() {
+        $.ajax({
+            url: "appointment/updateCompleteTimeByAppointmentId",
+            data:{"appointmentId":parse.appointmentId},
+            dataType: "json",
+            success:function (i) {
+                if (i>0){
+                    alert("完成时间已插入")
+                }else {
+                    alert("完成时间插入失败")
+                }
+            }
+        });
+    }
+
+
+</script>
+</html>

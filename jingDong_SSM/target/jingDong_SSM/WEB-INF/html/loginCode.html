@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <script th:src="@{/js/jquery-1.12.4.min.js}"></script>
+</head>
+<body>
+<form th:action="@{/login2}">
+    <input type="text" placeholder="账号" name="acc">
+    <input type="password" placeholder="密码" name="pwd">
+    <input type="text" placeholder="验证码" name="code">
+    <img th:src="@{/authCode}" alt="" id="codeImg" style="cursor: pointer">
+    <!--button不写type默认submit-->
+    <button>登入</button>
+</form>
+</body>
+
+<script>
+    $("#codeImg").click(function () {
+        var oldSrc = $(this).attr("src");
+        $(this).attr("src",oldSrc+"?ran="+Math.random())
+    })
+</script>
+</html>

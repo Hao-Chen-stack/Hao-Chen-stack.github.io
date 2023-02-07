@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TblbillMapper">
+
+    <select id="findBillListByManagerAcc" resultType="com.cykj.bean.Tblbill">
+        select b.*,u.userName from tblbill b ,tbluser u,tblmanager m
+            where b.userId=u.userId
+		    and m.managerId=b.managerId
+            and managerAcc=#{managerAcc}
+    </select>
+
+    <insert id="addBillMsg">
+        insert into tblbill values(null,#{userId},now(),#{billtype},#{state},#{amount},#{managerId})
+    </insert>
+</mapper>

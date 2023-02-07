@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>ECharts</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/layui-v2.6.8/layui/layui.js"></script>
+    <link href="js/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
+    <script th:src="@{/js/jquery-1.12.4.min.js}"></script>
+    <!-- 引入刚刚下载的 ECharts 文件 -->
+    <script src="js/echarts.js"></script>
+</head>
+<body>
+<h2>查询条件:</h2>
+<form id="searchFrom">
+<h2></span><span id="appointSum"></span></h2>
+<div id="btn" style="text-align: center">
+    预约日期：<input type="date" name="startDate" id="startDate"/>至<input type="date" name="endDate" id="endDate"/>
+    <button type="button" onclick="t1()" class="layui-btn layui-btn-warm">查询</button>
+</div>
+</form>
+<!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+<div id="main" style="width: 750px;height:500px;">
+
+</div>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '渠道量统计'
+        },
+        tooltip: {},
+        legend: {
+            data: ['显示/隐藏']
+        },
+        xAxis: {
+            data: []
+        },
+        yAxis: {},
+        series: [{
+            name: '显示/隐藏',
+            type: 'bar',
+            data: []
+        }]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+    //文档加载事件
+    $(function () {
+        t1()
+    })
+
+    function t1(){
+        var realNameList = [];
+        var appointCountsList = [];
+        var appointSum = 0;
+        $.ajax({
+            url:"appointment/findDoctorAppointCount",
+            data:$("#searchFrom").serialize(),
+            dataType:"json",
+            success:function (doctorAppointCount) {
+                for (var i = 0; i < doctorAppointCount.length ; i++) {
+                    realNameList.push(doctorAppointCount[i].realName);
+                    appointCountsList.push(doctorAppointCount[i].appointCounts);
+                    appointSum+=doctorAppointCount[i].appointCounts;
+                }
+                var option1 = myChart.getOption();
+                $("#appointSum").html("该段时间内总预约量为:"+appointSum);
+                option1.xAxis[0].data=realNameList;
+                option1.series[0].data=appointCountsList;
+                myChart.setOption(option1);
+            }
+        });
+
+    }
+
+</script>
+</body>
+</html>

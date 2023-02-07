@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图片验证码</title>
+    <script src="js/jquery-1.12.4.min.js" type="text/javascript"></script>
+</head>
+<body>
+    <div class="form-group">
+        验证码：<input id="authCode" name="authCode" type="text"/>
+        <!--这里img标签的src属性的值为后台实现图片验证码方法的请求地址-->
+        <label><img type="image" src="authCode" id="codeImage" onclick="changeCode()" style="cursor:pointer;"/></label>
+        <label><a onclick="changeCode()">换一张</a></label>
+    </div>
+</body>
+<script type="text/javascript">
+    function changeCode(){
+        $("#codeImage").attr('src','authCode?abc='+Math.random());//链接后添加Math.random，确保每次产生新的验证码，避免缓存问题。
+    }
+</script>
+</html>

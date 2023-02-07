@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.RegionMapper">
+    <!--
+        id:唯一标识
+        resultType:返回值类型
+        标签中写sql语句
+
+        查询
+    -->
+    <select id="findRegionList" resultType="com.cykj.bean.Tblregion">
+        select a.regionName province,b.regionName city,c.regionName area,c.regionId,c.regionStatus
+        from tblregion a join tblregion b on a.regionId=b.parentId
+        join tblregion c on b.regionId=c.parentId
+        <where>
+            <if test="provinceId>0">
+                a.regionId=#{provinceId}
+            </if>
+            <if test="cityId>0">
+                and b.regionId=#{cityId}
+            </if>
+            <if test="areaName != null and areaName != ''">
+                and c.regionName like concat('%',#{areaName},'%')
+            </if>
+            <if test="regionStatus>=0">
+                and c.regionStatus=#{regionStatus}
+            </if>
+        </where>
+        limit #{index},#{size}
+    </select>
+
+<!--    分页-->
+    <select id="findRegionByParentId" resultType="com.cykj.bean.Tblregion">
+        select * from tblregion where parentId=#{parentId}
+    </select>
+    <select id="findRegionCount" resultType="java.lang.Integer">
+        select count(*)
+        from tblregion a join tblregion b on a.regionId=b.parentId
+        join tblregion c on b.regionId=c.parentId
+        <where>
+            <if test="provinceId>0">
+                a.regionId=#{provinceId}
+            </if>
+            <if test="cityId>0">
+                and b.regionId=#{cityId}
+            </if>
+            <if test="areaName != null and areaName != ''">
+                and c.regionName like concat('%',#{areaName},'%')
+            </if>
+            <if test="regionStatus>=0">
+                and c.regionStatus=#{regionStatus}
+            </if>
+        </where>
+    </select>
+
+
+    <!--concat函数：拼接
+        #{}:占位，预防注入
+        ${}：有注入的风险，当把表名或者表中的字段名当做参数的时候用
+      -->
+
+    <!--插入
+    -获取自增主键：useGeneratedKeys="true" keyProperty="主键字段"-->
+    <insert id="addRegion">
+        insert into tblregion values(null,#{regionName},#{parentId},1)
+    </insert>
+
+    <!--删除-->
+    <delete id="delRegion">
+        delete from tblregion where regionId=#{regionId}
+    </delete>
+
+    <!--修改-->
+    <update id="updateRegion">
+        update tblregion set regionName=#{regionName} where regionId=#{regionId}
+    </update>
+
+
+</mapper>

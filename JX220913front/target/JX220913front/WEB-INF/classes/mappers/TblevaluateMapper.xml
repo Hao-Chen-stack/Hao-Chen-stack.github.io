@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TblevaluateMapper">
+
+    <select id="findEvaListByMAcc" resultType="com.cykj.bean.Tblevaluate">
+        select * from tblevaluate where managerAcc = #{managerAcc}
+    </select>
+
+    <insert id="addUserEva">
+        insert into tblevaluate values(null,#{evaluateContext},#{userAcc},#{managerAcc},now())
+    </insert>
+
+    <update id="updateAppointState">
+        update tblappointment set appointstate = '已评价' where  appointmentId = #{appointmentId}
+    </update>
+
+</mapper>

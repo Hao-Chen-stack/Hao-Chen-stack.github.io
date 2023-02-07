@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <!-- 引入 layui.js -->
+    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <script th:src="@{/js/jquery-1.12.4.min.js}"></script>
+    <style type="text/css">
+
+    </style>
+</head>
+<body>
+<div id="addWin" style="position: absolute;width: 100vw;height: 250vh;
+				background-color: #00000024;left: 0;top: 0; ">
+    <div style="width: 550px;height: 850px;background-color: aliceblue;
+					margin: auto;
+					margin-top: 200px;text-align: center;padding: 15px;">
+        <h1>我要预约</h1>
+        <form id="addAppointment">
+            <table style="width: 100%;line-height: 45px;">
+                <tr>
+                    <td style="text-align: left; ">咨询领域：</td>
+                    <td>
+                        <select style="width: 100px;" onchange="doctorMsgList(this.value)" name="areaName">
+                            <option name="areaName" value="-1">请选择领域</option>
+                            <option name="areaName" value="发展心理学">发展心理学</option>
+                            <option name="areaName" value="学习心理学">学习心理学</option>
+                            <option name="areaName" value="人格心理学">人格心理学</option>
+                            <option name="areaName" value="感知心理学">感知心理学</option>
+                            <option name="areaName" value="比较心理学">比较心理学</option>
+                            <option name="areaName" value="认知心理学">认知心理学</option>
+                            <option name="areaName" value="犯罪心理学">犯罪心理学</option>
+                        </select>
+                    </td>
+
+                    <td>心理咨询师</td>
+                    <td>
+                        <select style="width: 100px;" id="doctor" onchange="doctorMsg(this.value)" name="managerAcc">
+
+                        </select>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td><img width="100px" th:src="@{/img/1.png}" alt="1"></td>
+                    <td>
+                        咨询师姓名: <span id="doctorname"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        学校名称: <span id="doctorschool"></span>
+                    </td>
+                    <td>
+                       职称: <span id="doctorTitle"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">擅长领域：</td>
+
+                    <td>
+                        <span id="sector"></span>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td style="text-align: left; "> 服务价格：</td>
+                    <td>
+                        <span  id="doctorprice"></span>
+<!--                        <input  name="doctorprice"  id="doctorpriceHidden" type="hidden">-->
+                    </td>
+
+                </tr>
+                <tr>
+
+                    <td style="text-align: left; "> 专业背景：</td>
+                    <td>
+                        <span  id="background"></span>
+                    </td>
+
+                </tr>
+
+                <tr style="width: 200px">
+                    <td style="text-align: left; ">可约时间：</td>
+
+                    <td>
+                        <div class="layui-inline"> <!-- 注意：这一层元素并不是必须的 -->
+                            <input type="text" class="layui-input" id="test1" name="appointmentdate">
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <tbody class="layui-table" id="time">
+
+                    </tbody>
+                    <table >
+
+                    </table>
+
+                </tr>
+                <tr id="choicedoctorprice" style="width: 200px">
+                    <td style="text-align: left; ">问题描述：</td>
+                    <td>
+                        <textarea name="problem" rows="" cols="" style="height: 150px; width: 450px;"></textarea>
+
+                    </td>
+                </tr>
+
+
+            </table>
+            <button style="margin-top: 20px; margin-right: 50px;" type="button" onclick="addUserCheckMsg()">提交</button>
+            <button type="button" onclick="cancelAdd()">取消</button>
+        </form>
+    </div>
+</div>
+</body>
+
+<script src="js/IWantAppointment.js"></script>
+</html>

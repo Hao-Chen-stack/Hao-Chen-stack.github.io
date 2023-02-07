@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TblgoodsMapper">
+
+    <select id="findGoodsList" resultType="com.cykj.bean.Tblgoods">
+        select a.*,b.gtypeName from  tblgoods a inner join tblgoodtype b on a.gtypeId=b.gtypeId
+        <where>
+            <if test="tblgoods.gtypeId>0">
+                and a.gtypeId=#{tblgoods.gtypeId}
+            </if>
+            <if test="tblgoods.goodsName != null and tblgoods.goodsName != ''">
+                and goodsName like concat('%',#{tblgoods.goodsName},'%')
+            </if>
+            <if test="tblgoods.minPrice>0">
+                and goodsPrice&gt;=#{tblgoods.minPrice}
+            </if>
+            <if test="tblgoods.maxPrice>0">
+                and goodsPrice&lt;=#{tblgoods.maxPrice}
+            </if>
+        </where>
+        limit #{page},#{size}
+    </select>
+
+
+    <select id="findGoodsCount" resultType="java.lang.Integer">
+        select count(*) from  tblgoods a inner join tblgoodtype b on a.gtypeId=b.gtypeId
+        <where>
+            <if test="gtypeId>0">
+                and a.gtypeId=#{gtypeId}
+            </if>
+            <if test="goodsName != null and goodsName != ''">
+                and goodsName like concat('%',#{goodsName},'%')
+            </if>
+            <if test="minPrice != null and minPrice>0">
+                and goodsPrice&gt;=#{minPrice}
+            </if>
+            <if test="maxPrice !=null and maxPrice>0">
+                and goodsPrice&lt;=#{maxPrice}
+            </if>
+        </where>
+    </select>
+
+    <select id="findGoodsTypeList" resultType="com.cykj.bean.Tblgoodtype">
+        select * from tblgoodtype
+    </select>
+
+    <delete id="delGoodsByGoodsId">
+        delete from tblgoods where goodsId=#{goodsId}
+    </delete>
+
+    <insert id="addGoods">
+        insert into tblgoods values(null,#{gtypeId},#{goodsName},
+        #{goodsPrice},#{goodsImage},#{goodsDetail},
+        #{goodsInventory},NOW(),NOW())
+    </insert>
+
+<!--    <select id="findGoods" resultType="com.cykj.bean.Tblgoods">-->
+<!--        select a.*,b.gtypeName from  tblgoods a inner join tblgoodtype b on a.gtypeId=b.gtypeId-->
+<!--        <where>-->
+<!--            <if test="gtypeId>0">-->
+<!--                and gtypeId=#{gtypeId}-->
+<!--            </if>-->
+<!--            <if test="goodsName != null and goodsName != ''">-->
+<!--                and goodsName like concat('%',#{goodsName},'%')-->
+<!--            </if>-->
+<!--            <if test="minPrice>0">-->
+<!--                and goodsPrice$gt;=#{minPrice}-->
+<!--            </if>-->
+<!--            <if test="maxPrice>0">-->
+<!--                and goodsPrice$lt;=#{maxPrice}-->
+<!--            </if>-->
+<!--        </where>-->
+<!--    </select>-->
+
+    <update id="updateGoods">
+        update tblgoods
+        set gtypeId=#{gtypeId},
+        goodsName=#{goodsName},
+        goodsPrice=#{goodsPrice},
+        goodsImage=#{goodsImage},
+        goodsDetail=#{goodsDetail},
+        goodsInventory=#{goodsInventory},
+        updateTime=now()
+        where goodsId=#{goodsId}
+    </update>
+
+</mapper>

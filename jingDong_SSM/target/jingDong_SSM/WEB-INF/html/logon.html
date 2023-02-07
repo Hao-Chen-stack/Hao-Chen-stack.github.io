@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册界面</title>
+</head>
+<body>
+<form action="manager" method="get">
+    <!-- 隐藏域 -->
+    <input type="hidden" name="id" value="1">
+    <input type="hidden" name="action" value="register">
+<a href="https://www.jd.com/"><img src="imgs/jingdong2.png" alt=""></a>
+<br>
+<a href="login.html">已有账号？请登录</a>
+<table style="margin:0 auto; margin-top: 70px;">
+    <tr>
+        <td style="text-align: center; color: red;" colspan="2">账户注册</td>
+    </tr>
+    <tr>
+        <td colspan="2"><hr></td>
+    </tr>
+    <tr>
+        <td>
+            <img src="imgs/userAcc.png" alt="">
+        </td>
+        <td>
+            <!-- 账号输入框 -->
+            <input type="text" placeholder="账号名" style="height: 47px; width: 250px;" name = "acc" >
+        </td>
+    </tr>
+    <tr>
+    <tr>
+        <td>
+            <img src="imgs/userAcc.png" alt="">
+        </td>
+        <td>
+            <!-- 邮箱输入框 -->
+            <input type="text" placeholder="邮箱" style="height: 47px; width: 250px;" name = "email" >
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="imgs/userPwd.png" alt="">
+        </td>
+        <td>
+            <!-- 密码输入框 -->
+            <input type="password" placeholder="密码" style="height: 47px; width: 250px;" name = "pwd" >
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="imgs/userAcc.png" alt="">
+        </td>
+        <td>
+            <!-- 手机号输入框 -->
+            <input type="text" placeholder="手机号" style="height: 47px; width: 250px;" name = "phone" >
+        </td>
+    </tr>
+    <!-- 性别 -->
+    <tr>
+        <td>性别：</td>
+        <td colspan="2">
+            <!-- 单选框：要name	属性一致才能实现单选的效果 -->
+            男<input type="radio" name="sex" value="男">
+            女<input type="radio" name="sex" value="女">
+        </td>
+    </tr>
+    <tr>
+        <td>地址：</td>
+        <td>
+            <select name="province" id="">
+                <option value="1">福建省</option>
+                <option value="2">浙江省</option>
+                <option value="3">广东省</option>
+            </select>
+            <select name="city" id="">
+                <option value="6">厦门市</option>
+                <option value="7">杭州市</option>
+                <option value="8">广州市</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>出生年月</td>
+        <td>
+            <input type="datetime-local" name="birthday">
+        </td>
+    </tr>
+    <!-- 注册按钮 -->
+    <tr>
+        <td colspan="2">
+            <input type="submit" value="注&nbsp;&nbsp;&nbsp;册" style="height: 50px; width: 315px; font-size: 20px; background-color: red; color: white ; border: 0;">
+        </td>
+    </tr>
+    <tr style="height: 20px;">
+    </tr>
+    <tr>
+        <td colspan="2"><hr></td>
+    </tr>
+    <tr>
+        <td><img src="imgs/qq.png" alt=""><a href="">绑定QQ</a></td>
+        <td>&nbsp;|&nbsp;<img src="imgs/wechat.png" alt="" ><a href="">绑定微信</a></td>
+        <td><img src="imgs/jiantou.png" alt=""><a href="login.html">立即登录</a></td>
+    </tr>
+</table>
+</form>
+</body>
+</html>

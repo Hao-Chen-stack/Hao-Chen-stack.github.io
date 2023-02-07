@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TblbillMapper">
+
+    <select id="findBillListByUAcc" resultType="com.cykj.bean.Tblbill">
+        select b.*,m.realName from tblbill b left join  tblmanager m on b.managerId = m.managerId
+        where userId = (select userId from tbluser where userAcc = #{userAcc})
+        ORDER BY billdate DESC
+        limit #{page},#{size}
+    </select>
+
+    <select id="findBillListByUAccCount" resultType="java.lang.Integer">
+        select count(*) from tblbill b left join  tblmanager m on b.managerId = m.managerId
+        where userId = (select userId from tbluser where userAcc = #{userAcc})
+        ORDER BY billdate DESC
+    </select>
+
+    <select id="findUserBalanceByUAcc" resultType="java.lang.String">
+        select userBalance from tbluser where userAcc = #{userAcc}
+    </select>
+
+    <insert id="addBillMsg">
+        insert into tblbill values(null,(select userId from tbluser where userAcc = #{userAcc}),now(),#{billtype},#{state},#{amount},#{managerId})
+    </insert>
+</mapper>

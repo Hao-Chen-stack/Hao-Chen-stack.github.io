@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>后台管理</title>
+    <style>
+        /* *{
+            margin: 0;
+            padding: 0;
+        } */
+        #header {
+            height: 80px;
+            background-color: lightblue;
+            line-height: 80px;
+            text-align: center;
+            letter-spacing: 15px;
+        }
+
+        #menu {
+            width: 15%;
+            height: 800px;
+            background-color: Gainsboro;
+            float: left;
+        }
+
+        #content {
+            width: 100%;
+            height: 800px;
+            /* background-color: aqua; */
+        }
+
+        #content::after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+
+        iframe {
+            width: 80%;
+            height: 100%;
+        }
+
+        #menu a {
+            text-decoration: none;
+        }
+
+        .mainMenu>ul a {
+            font-size: 20px;
+            color: azure;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .mainMenu {
+            font-size: 26px;
+            font-weight: bold;
+            margin: 5px;
+            /* background-color: burlywood;
+            text-align: center; */
+        }
+
+        .mainMenu ul {
+            display: none;
+        }
+
+        .mainMenu:hover ul {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<!--<form action="goods" method="get">-->
+    <!-- 隐藏域 -->
+<!--    <input type="hidden" name="id" value="1">-->
+<!--    <input type="hidden" name="action" value="select">-->
+    <div id="header">
+        <h1>京东后台管理系统</h1>
+    </div>
+    <div id="menu">
+        <!-- <a href="../css样式/引入方式.html" target="con">baidu</a>
+    <a href="../css样式/首页.html" target="con">chuanyi</a> -->
+        <ul>
+            <li class="mainMenu">
+                <a href="">用户管理</a>
+                <ul>
+                    <li>
+                        <a href="./浮动.html" target="con">客户管理</a>
+                    </li>
+                    <li>
+                        <a href="./定位.html" target="con">员工管理</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <a th:href="@{/region}" target="con">区域管理</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <a th:href="@{/rolepower}" target="con">权限管理</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="mainMenu">
+                <a href="">商品管理</a>
+                <ul>
+                    <li>
+                        <a th:href="@{/goodsList}" target="con">商品管理</a>
+                    </li>
+                    <li>
+                        <a href="./定位.html" target="con">类型管理</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="mainMenu">
+                <a href="">系统管理</a>
+                <ul>
+                    <li>
+                        <a href="">字典管理</a>
+                    </li>
+                    <li>
+                        <a href="">角色管理</a>
+                    </li>
+                    <li>
+                        <a href="">权限管理</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div id="content">
+        <iframe width="80%" height="100%" src="" frameborder="0" name="con"></iframe>
+    </div>
+<!--</form>-->
+</body>
+</html>

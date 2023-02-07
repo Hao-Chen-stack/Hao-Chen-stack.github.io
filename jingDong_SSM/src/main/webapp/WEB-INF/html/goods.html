@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商品管理</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/layui-v2.6.8/layui/layui.js"></script>
+    <link href="js/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
+</head>
+<body>
+    <h1>商品管理</h1>
+    <button onclick="openAddWin()">增加</button>
+<!--    <table style="width: 80%;line-height: 30px;" border="1" cellpadding="0" cellspacing="0">-->
+    <form id="searchFrom">
+        <input type="hidden" name="page" id="page">
+        <input type="hidden" name="size" id="size">
+        类型：
+        <select name="gtypeId" id="gtypeId">
+<!--            <option ></option>-->
+        </select>
+        <input type="text" placeholder="商品名称" name="goodsName">
+        <input type="text" placeholder="最低价格" name="minPrice">
+        <input type="text" placeholder="最高价格" name="max Price">
+        <button type="button" onclick="searchGoods()">查询</button>
+    </form>
+    <table class="layui-table">
+        <tr>
+            <th>商品id</th>
+            <th>商品类型</th>
+            <th>商品名称</th>
+            <th>商品价格</th>
+            <th>商品图片</th>
+            <th>商品备注</th>
+            <th>商品库存</th>
+            <th>创建时间</th>
+            <th>更新时间</th>
+            <th>操作</th>
+        </tr>
+        <tbody id="tb"></tbody>
+    </table>
+
+    <div style="text-align: center">
+        <button id="prev">上一页</button>
+        <span style="margin: 0px 30px 0px 30px" id="pageMsg"></span>
+        <button id="next">下一页</button>
+    </div>
+
+<!--添加商品的弹窗-->
+    <div id="addWin" style="position: absolute;width: 100vw;height: 100vh;
+				background-color: #00000024;left: 0;top: 0; display: none;">
+        <div style="width: 300px;height: auto;background-color: aliceblue;
+					margin: auto;
+					margin-top: 200px;text-align: center;padding: 15px;">
+            <h1>添加商品</h1>
+            <form id="addForm">
+<!--                <input type="hidden" name="action" value="addGoods">-->
+                <table style="width: 100%;line-height: 45px;">
+                    <tr>
+                        <td style="text-align: right;">商品类型：</td>
+                        <td>
+<!--                            <input type="text" placeholder="类型id" id="addType" name="gtypeId" style="width: 100px;">-->
+                            <select name="gtypeId" id="gtypeIdAdd"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">商品名称：</td>
+                        <td>
+                            <input type="text" placeholder="商品名称" id="addName" name="goodsName" style="width: 100px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">商品价格：</td>
+                        <td>
+                            <input type="text" placeholder="商品价格" id="addPrice" name="goodsPrice" style="width: 100px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">商品图片：</td>
+                        <td>
+                            <input type="file" id="goodsImage" onchange="updateFile(this.id)" style="width: 100px;">
+                            <input type="hidden" name="goodsImage" id="goodsImage_hidden" style="width: 100px;">
+                            <img src="" alt="" id="goodsImage_img" style="width: 100px">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">商品备注：</td>
+                        <td>
+                            <input type="text" placeholder="商品备注" id="addDetail" name="goodsDetail" style="width: 100px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">商品库存：</td>
+                        <td>
+                            <input type="text" placeholder="商品库存" id="addInventory" name="goodsInventory" style="width: 100px;">
+                        </td>
+                    </tr>
+                </table>
+                <button style="margin-top: 20px; margin-right: 50px;" type="button" onclick="addGoods()">确定</button>
+                <button type="button" onclick="cancelAdd()">取消</button>
+            </form>
+        </div>
+    </div>
+
+    <!--修改商品的弹窗-->
+    <div id="updWin" style="position: absolute;width: 100vw;height: 100vh;
+				background-color: #00000024;left: 0;top: 0; display: none;">
+        <div style="width: 300px;height: auto;background-color: aliceblue;
+					margin: auto;
+					margin-top: 200px;text-align: center;padding: 15px;">
+            <h1>修改商品</h1>
+            <form id="updForm">
+                <input type="hidden" name="goodsId" id="goodsIdUpd">
+                <!--                <input type="hidden" name="action" value="addGoods">-->
+                <table style="width: 100%;line-height: 45px;">
+                    <tr>
+                        <td style="text-align: right;">商品类型：</td>
+                        <td>
+                            <!--                            <input type="text" placeholder="类型id" id="addType" name="gtypeId" style="width: 100px;">-->
+                            <select name="gtypeId" id="gtypeIdUpd"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">商品名称：</td>
+                        <td>
+                            <input type="text" placeholder="商品名称" id="NameUpd" name="goodsName" style="width: 100px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">商品价格：</td>
+                        <td>
+                            <input type="text" placeholder="商品价格" id="PriceUpd" name="goodsPrice" style="width: 100px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">商品图片：</td>
+                        <td>
+                            <input type="file" id="goodsImageUpd" onchange="updateFile(this.id)" style="width: 100px;">
+                            <input type="hidden" name="goodsImage" id="goodsImageUpd_hidden" style="width: 100px;">
+                            <img src="" alt="" id="goodsImageUpd_img" style="width: 100px">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">商品备注：</td>
+                        <td>
+                            <input type="text" placeholder="商品备注" id="DetailUpd" name="goodsDetail" style="width: 100px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">商品库存：</td>
+                        <td>
+                            <input type="text" placeholder="商品库存" id="InventoryUpd" name="goodsInventory" style="width: 100px;">
+                        </td>
+                    </tr>
+                </table>
+                <button style="margin-top: 20px; margin-right: 50px;" type="button" onclick="updGoods()">确定</button>
+                <button type="button" onclick="cancelUpd()">取消</button>
+            </form>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    var path = /*[[@{/}]]*/ '';
+    /*]]>*/
+
+    console.info(path);
+</script>　
+<script src="js/goods.js"></script>
+</html>

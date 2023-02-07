@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>预约终止列表</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/layui-v2.6.8/layui/layui.js"></script>
+    <link href="js/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
+    <script th:src="@{/js/jquery-1.12.4.min.js}"></script>
+</head>
+<body>
+<h1 style="text-align: center">预约终止列表</h1>
+<form id="searchFrom">
+</form>
+<table class="layui-table">
+    <tr>
+        <th>预约日期</th>
+        <th>预约时间</th>
+        <th>用户</th>
+        <th>领域</th>
+        <th>咨询师</th>
+        <th>预约状态</th>
+    </tr>
+    <tbody id="tb"></tbody>
+</table>
+<button class="layui-btn layui-btn-warm" onclick="reUrl()">返回</button>
+<!-- <div style="text-align: center">
+    <button id="prev" class="layui-btn layui-btn-warm">上一页</button>
+    <span style="margin: 0px 30px 0px 30px" id="pageMsg"></span>
+    <button id="next" class="layui-btn layui-btn-warm">下一页</button>
+</div> -->
+</body>
+<script>
+    //文档加载事件
+    $(function () {
+        showWinByStopForDoctor();
+    })
+
+    //查询被被停止预约的预约列表
+    function showWinByStopForDoctor() {
+        $.ajax({
+            url: "appointment/showWinByStopForDoctor",
+            // data: $("#searchFrom").serialize() + "&page=" + page + "&size=" + size,
+            dataType: "json",
+            // async: false,
+            success:function (stopAppointList) {
+                var html="";
+                for (var i = 0; i <stopAppointList.length ; i++) {
+                    html+="<tr>"
+
+                    html+="<td>"
+                    html+=stopAppointList[i].appointmentdate
+                    html+="</td>"
+
+                    html+="<td>"
+                    html+=stopAppointList[i].appointmenttime
+                    html+="</td>"
+
+                    html+="<td>"
+                    html+=stopAppointList[i].userName
+                    html+="</td>"
+
+                    html+="<td>"
+                    html+=stopAppointList[i].areaName
+                    html+="</td>"
+
+                    html+="<td>"
+                    html+=stopAppointList[i].managerAcc
+                    html+="</td>"
+
+
+                    html+="<td>"
+                    html+=stopAppointList[i].appointstate
+                    html+="</td>"
+
+                    html+="</tr>"
+                }
+
+                $("#tb").html(html);
+            }
+        })
+    }
+
+    function reUrl(){
+        $(location).attr('href', 'back');
+    }
+
+</script>
+</html>

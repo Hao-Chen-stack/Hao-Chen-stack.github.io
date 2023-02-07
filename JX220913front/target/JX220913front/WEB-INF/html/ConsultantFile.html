@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <!-- 引入 layui.js -->
+    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <script th:src="@{/js/jquery-1.12.4.min.js}"></script>
+    <style type="text/css">
+
+    </style>
+</head>
+<body>
+<div id="doctorMsgWin" style="position: absolute;width: 100vw;height: 250vh;
+				background-color: #00000024;left: 0;top: 0; ">
+    <div style="width: 550px;height: auto;background-color: aliceblue;
+					margin: auto;
+					margin-top: 200px;text-align: center;padding: 15px;">
+        <h1>咨询师档案</h1>
+<!--        <form id="addAppointment">-->
+            <table style="width: 100%;line-height: 45px;">
+                <tr>
+                    <td><img width="100px" th:src="@{/img/1.png}" alt="1"></td>
+                    <td>
+                        咨询师姓名: <span id="doctorName"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        学校名称: <span id="doctorSchool"></span>
+                    </td>
+                    <td>
+                        职称: <span id="Title"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">擅长领域：</td>
+                    <td>
+                        <span id="area"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">专业背景：</td>
+                    <td>
+                        <span id="doctorBackground"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">简介：</td>
+                    <td>
+                        <span id=" profile">这个人很懒，没有什么简介</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;" colspan="2">用户评价:</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div>
+                            <iframe style="height: 300px;" src="UserEvaluation"></iframe>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <button type="button" class="layui-btn layui-btn-warm" onclick="cancelAdd()">返回</button>
+<!--        </form>-->
+    </div>
+</div>
+</body>
+<script src="js/appointmentList.js"></script>
+<script>
+    var fUrl = window.location.href;
+    var managerAcc = fUrl.split("?")[1].split("=")[1];
+    // console.log(managerAcc);
+    //加载页面数据
+    $(function () {
+        console.log("执行")
+        $.ajax({
+            url: "appointment/doctorMsg",
+            data: {"managerAcc":managerAcc},
+            async:false,
+            dataType: "json",
+            success:function (map) {
+                var doctorList = map.doctorMsgList;// 集合
+                var areaList = map.areaNameList;// 集合
+                // 集合取元素通过下标
+                $("#doctorName").append(doctorList[0].realName)
+                $("#doctorSchool").append(doctorList[0].school)
+                $("#Title").append(doctorList[0].title)
+                $("#area").append(areaList[0].areaName)
+                $("#doctorBackground").append(doctorList[0].background)
+                layui.element.init()//渲染
+            }
+        });
+    });
+    //关闭咨询师档案窗口
+    function cancelAdd() {
+        $("#doctorName").empty()
+        $("#doctorSchool").empty()
+        $("#Title").empty()
+        $("#area").empty()
+        $("#doctorBackground").empty()
+        window.parent.location.href='userIndex';
+    }
+</script>
+</html>

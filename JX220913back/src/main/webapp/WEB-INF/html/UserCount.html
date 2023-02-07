@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>ECharts</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/layui-v2.6.8/layui/layui.js"></script>
+    <link href="js/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
+    <script th:src="@{/js/jquery-1.12.4.min.js}"></script>
+    <!-- 引入刚刚下载的 ECharts 文件 -->
+    <script src="js/echarts.js"></script>
+</head>
+<body>
+<h2><span id="tName"></span></h2>
+<h2><span id="uSum"></span></h2>
+<div id="btn" style="text-align: center">
+    <button type="button" onclick="t1()" class="layui-btn layui-btn-warm">本周</button>
+    <button type="button" onclick="t2()" class="layui-btn layui-btn-warm">本月</button>
+    <button type="button" onclick="t3()" class="layui-btn layui-btn-warm">近半年</button>
+</div>
+<!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+<div id="main" style="width: 750px;height:500px;">
+
+</div>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '用户统计'
+        },
+        tooltip: {},
+        legend: {
+            data: ['显示/隐藏']
+        },
+        xAxis: {
+            data: []
+        },
+        yAxis: {},
+        series: [{
+            name: '显示/隐藏',
+            type: 'bar',
+            data: []
+        }]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+    //文档加载事件
+    $(function () {
+        t1()
+    })
+
+    function t1(){
+        var weekList = [];
+        var userNumList = [];
+        var uSum = 0;
+        $.ajax({
+            url:"userCount/findWeekNowList",
+            // data:"",
+            dataType:"json",
+            success:function (weekNowList) {
+                for (var i = 0; i < weekNowList.length ; i++) {
+                    weekList.push(weekNowList[i].week);
+                    userNumList.push(weekNowList[i].userNum);
+                    uSum+=weekNowList[i].userNum;
+                }
+                var option1 = myChart.getOption();
+                $("#tName").html("本周");
+                $("#uSum").html("本周总新增用户数:"+uSum);
+                option1.xAxis[0].data=weekList;
+                option1.series[0].data=userNumList;
+                myChart.setOption(option1);
+            }
+        });
+
+    }
+
+    function t2(){
+        var MonthList = [];
+        var userNumList = [];
+        var uSum = 0;
+        $.ajax({
+            url:"userCount/findMonthNowList",
+            // data:"",
+            dataType:"json",
+            success:function (MonthNowList) {
+                for (var i = 0; i < MonthNowList.length ; i++) {
+                    MonthList.push(MonthNowList[i].week);
+                    userNumList.push(MonthNowList[i].userNum);
+                    uSum+=MonthNowList[i].userNum;
+                }
+                var option2 = myChart.getOption();
+                $("#tName").html("本月");
+                $("#uSum").html("本月总新增用户数:"+uSum);
+                option2.xAxis[0].data=MonthList;
+                option2.series[0].data=userNumList;
+                myChart.setOption(option2);
+            }
+        });
+
+    }
+
+    function t3(){
+        var HalfYearList = [];
+        var userNumList = [];
+        var uSum = 0;
+        $.ajax({
+            url:"userCount/findHalfYearNowList",
+            // data:"",
+            dataType:"json",
+            success:function (halfYearNowList) {
+                for (var i = 0; i < halfYearNowList.length ; i++) {
+                    HalfYearList.push(halfYearNowList[i].yearMonth);
+                    userNumList.push(halfYearNowList[i].userNum);
+                    uSum+=halfYearNowList[i].userNum;
+                }
+                var option3= myChart.getOption();
+                $("#tName").html("近半年");
+                $("#uSum").html("近半年总新增用户数:"+uSum);
+                option3.xAxis[0].data=HalfYearList;
+                option3.series[0].data=userNumList;
+                myChart.setOption(option3);
+            }
+        });
+
+    }
+
+
+</script>
+</body>
+</html>

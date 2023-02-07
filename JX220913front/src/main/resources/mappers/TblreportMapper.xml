@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TblreportMapper">
+
+    <select id="findReportListByUAcc" resultType="com.cykj.bean.Tblreport">
+        select * from tblreport where userId = (select userId from tbluser where userAcc = #{userAcc})
+        limit #{page},#{size}
+    </select>
+
+    <select id="findReportCount" resultType="java.lang.Integer">
+        select count(*) from tblreport where userId = (select userId from tbluser where userAcc = #{userAcc})
+    </select>
+
+    <select id="findContextAndResByDate" resultType="com.cykj.bean.Tblreport">
+        select * from tblreport where reportId = #{reportId}
+    </select>
+
+    <insert id="addReportMsg">
+        insert into tblreport values(null,(select userId from tbluser where userAcc = #{userAcc}),#{reportContent},#{reportResults},NOW(),#{areaName},#{paperScore})
+    </insert>
+</mapper>

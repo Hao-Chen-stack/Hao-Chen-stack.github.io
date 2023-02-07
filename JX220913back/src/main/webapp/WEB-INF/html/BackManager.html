@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>心理咨询平台后台管理界面</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/layui-v2.6.8/layui/layui.js"></script>
+    <link rel="stylesheet" href="js/layui-v2.6.8/layui/css/layui.css">
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo layui-hide-xs layui-bg-black">
+           管理员端
+        </div>
+        <!-- 头部区域（可配合layui 已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <!-- 移动端显示 -->
+            <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
+                <i class="layui-icon layui-icon-spread-left"></i>
+            </li>
+            <li class="layui-nav-item layui-hide-xs"><h1>心理咨询平台后台管理系统  欢迎：</h1></li>
+            <li class="layui-nav-item layui-hide-xs"><p id="managerName" style="color: #00FF00"></p></li>
+            <li class="layui-nav-item layui-hide-xs"><p id="roleName" style="color: #00FF00"></li>
+
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+
+                <a href="javascript:;" >
+                    <img src="img/1.png" class="layui-nav-img" style="border: 3px solid red">
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">个人资料</a></dd>
+                    <dd><a href="">设置</a></dd>
+                    <dd><a href="logout">登出</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
+                <a href="javascript:;">
+                    <i class="layui-icon layui-icon-more-vertical"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test" id="menu">
+<!--                <li class="layui-nav-item layui-nav-itemed">-->
+<!--                    <a class="" href="javascript:;">账户管理</a>-->
+<!--                    <dl class="layui-nav-child">-->
+<!--                        <dd><a th:href="@{/userList}" target="con">客户管理</a></dd>-->
+<!--                        <dd><a href="javascript:;">后台用户管理</a></dd>-->
+<!--                        <dd><a href="javascript:;">咨询师管理</a></dd>-->
+<!--                        <dd><a href="">收起</a></dd>-->
+<!--                    </dl>-->
+<!--                </li>-->
+<!--                <li class="layui-nav-item">-->
+<!--                    <a href="javascript:;">业务管理</a>-->
+<!--                    <dl class="layui-nav-child">-->
+<!--                        <dd><a href="javascript:;">预约管理</a></dd>-->
+<!--                        <dd><a href="javascript:;">在线评估管理</a></dd>-->
+<!--                        <dd><a href="javascript:;">题库管理</a></dd>-->
+<!--                        <dd><a href="">收起</a></dd>-->
+<!--                    </dl>-->
+<!--                </li>-->
+<!--                <li class="layui-nav-item">-->
+<!--                    <a href="javascript:;">统计报表</a>-->
+<!--                    <dl class="layui-nav-child">-->
+<!--                        <dd><a href="javascript:;">用户统计</a></dd>-->
+<!--                        <dd><a href="javascript:;">渠道量统计</a></dd>-->
+<!--                        <dd><a href="">收起</a></dd>-->
+<!--                    </dl>-->
+<!--                </li>-->
+<!--                <li class="layui-nav-item">-->
+<!--                    <a href="javascript:;">系统管理</a>-->
+<!--                    <dl class="layui-nav-child">-->
+<!--                        <dd><a href="javascript:;">权限配置</a></dd>-->
+<!--                        <dd><a href="">收起</a></dd>-->
+<!--                    </dl>-->
+<!--                </li>-->
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 15px;width: 100%;height: 600px;">
+            <iframe width="80%" height="100%" src="" frameborder="0" name="con"></iframe>
+        </div>
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        底部固定区域
+    </div>
+</div>
+1
+<script>
+    var item = localStorage.getItem("list");
+    var list = JSON.parse(item);
+    var managerName = localStorage.getItem("managerName");
+    var roleName = localStorage.getItem("roleName");
+
+    $(function () {
+        treePro();
+        layui.element.init();
+        // console.log(list)
+        document.getElementById("managerName").innerText = managerName;
+        // console.log(managerName)
+        document.getElementById("roleName").innerText = roleName;
+
+        stopAppointCount();
+    })
+
+
+    //动态生成菜单栏
+    function treePro(){
+        var html = '';
+        for (var i = 0; i < list.length; i++) {
+            var text = list[i].text;
+            html += "<li class=\"layui-nav-item\">"
+            html += '<a class="" href="javascript:;">'+text+'</a>'
+            if (list[i].hasChildren){
+                html += '<dl class="layui-nav-child">';
+                var children = list[i].children;
+                for (var j = 0; j < children.length; j++) {
+                    console.log(children[j].text)
+                    var childText = children[j].text;
+                    html += '<dd><a href="'+children[j].powerUrl+'" target="con">'+childText+'</a></dd>'
+                }
+                html += '</dl>'
+            }
+        }
+        $("#menu").html(html);
+    }
+
+    //JS
+    layui.use(['element', 'layer', 'util'], function(){
+        var element = layui.element
+            ,layer = layui.layer
+            ,util = layui.util
+            ,$ = layui.$;
+
+        //头部事件
+        util.event('lay-header-event', {
+            //左侧菜单事件
+            menuLeft: function(othis){
+                layer.msg('展开左侧菜单的操作', {icon: 0});
+            }
+            ,menuRight: function(){
+                layer.open({
+                    type: 1
+                    ,content: '<div style="padding: 15px;">处理右侧面板的操作</div>'
+                    ,area: ['260px', '100%']
+                    ,offset: 'rt' //右上角
+                    ,anim: 5
+                    ,shadeClose: true
+                });
+            }
+        });
+
+    });
+
+    //查询被停止预约的列表的总条数
+    function stopAppointCount() {
+        $.ajax({
+            url:"appointment/stopAppointCount",
+            dataType:"json",
+            success:function (i) {
+                if (i>0){
+                    //如果条数大于0则登录成功后弹出被管理员停止预约的用户列表的弹窗
+                    layer.open({
+                        title: '新的被终止信息'
+                        ,content: '是否前往查看'
+                        ,btn: ['是', '不再提醒']
+                        ,yes: function(){
+                            $(location).attr('href', 'StopAppointWin');
+                        }
+                        ,btn2: function(){
+                            //否按钮关闭回调
+                            //return false 开启该代码可禁止点击该按钮关闭
+                            updateManagerStopAns();
+                        }
+                        ,cancel: function(){
+                            //右上角关闭回调
+                            //return false 开启该代码可禁止点击该按钮关闭
+                        }
+                    });
+                }
+            }
+        })
+
+    }
+
+    //咨询师点击不再提醒后修改弹窗的状态
+    function updateManagerStopAns() {
+        $.ajax({
+            url: "appointment/updateManagerStopAns",
+            dataType: "json",
+            success:function (i) {
+                if (i>0){
+                    alert("已设置为不再提醒")
+                }else {
+                    alert("设置为不再提醒失败")
+                }
+            }
+        })
+    }
+
+
+
+</script>
+</body>
+</html>

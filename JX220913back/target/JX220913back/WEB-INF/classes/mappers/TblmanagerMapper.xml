@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TblmanagerMapper">
+
+    <select id="findManager" resultType="java.lang.Integer">
+        select count(*) from tblmanager where managerAcc=#{managerAcc} and managerPwd=#{managerPwd}
+    </select>
+
+    <select id="findRealNameByAcc" resultType="java.lang.String">
+        select realName from tblmanager where managerAcc=#{managerAcc}
+    </select>
+
+    <select id="findManagerList" resultType="com.cykj.bean.Tblmanager">
+        select * from tblmanager
+        <where>
+            and tblmanager.managerStatus!=2
+            <if test="tblmanager.managerAcc != null and tblmanager.managerAcc!= ''">
+                and managerAcc like concat('%',#{tblmanager.managerAcc},'%')
+            </if>
+
+            <if test="tblmanager.realName != null and tblmanager.realName!= ''">
+                and realName like concat('%',#{tblmanager.realName},'%')
+            </if>
+
+            <if test="tblmanager.title != null and tblmanager.title!= ''">
+                and title like concat('%',#{tblmanager.title},'%')
+            </if>
+
+            <if test="tblmanager.managerStatus>=0">
+                and managerStatus=#{tblmanager.managerStatus}
+            </if>
+        </where>
+        limit #{page},#{size}
+    </select>
+
+    <select id="findManagerCount" resultType="java.lang.Integer">
+        select count(*) from tblmanager
+        <where>
+                and managerStatus!=2
+            <if test="managerAcc != null and managerAcc!= ''">
+                and managerAcc like concat('%',#{managerAcc},'%')
+            </if>
+
+            <if test="realName != null and realName!= ''">
+                and realName like concat('%',#{realName},'%')
+            </if>
+
+            <if test="title != null and title!= ''">
+                and title like concat('%',#{title},'%')
+            </if>
+
+            <if test="managerStatus>=0">
+                and managerStatus=#{managerStatus}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateDelManager">
+        update tblmanager set managerStatus=2 where managerId=#{managerId}
+    </update>
+
+    <update id="rePwd">
+        update tblmanager set managerPwd='123456' where managerId=#{managerId}
+    </update>
+
+    <update id="onAndOffManager">
+        update tblmanager
+        <if test="managerStatus==0">
+            set managerStatus = 1
+        </if>
+        <if test="managerStatus==1">
+            set managerStatus = 0
+        </if>
+        where managerId=#{managerId}
+    </update>
+
+    <insert id="addManager" useGeneratedKeys="true" keyProperty="managerId">
+        insert into tblmanager values(null,#{roleid},
+        #{managerAcc},#{managerPwd},#{realName},
+        #{title},#{price},#{school},#{background},300,1)
+    </insert>
+
+    <select id="findAcc" resultType="java.lang.Integer">
+        select count(*) from tblmanager where managerAcc=#{managerAcc}
+    </select>
+
+    <select id="findmanagerBalanceByAcc" resultType="java.lang.String">
+        select managerBalance from tblmanager where managerAcc=#{managerAcc}
+    </select>
+
+    <select id="findIdByAcc" resultType="java.lang.Long">
+        select managerId from tblmanager where managerAcc=#{managerAcc}
+    </select>
+
+    <select id="findPriceByAcc" resultType="java.lang.Double">
+        select price from tblmanager where managerAcc=#{managerAcc}
+    </select>
+
+    <update id="updateMBalanceByMAcc">
+        update tblmanager set managerBalance = (managerBalance+price) where managerAcc = #{managerAcc}
+    </update>
+
+    <select id="findRoleIdByMAcc" resultType="java.lang.Integer">
+        select roleid from  tblmanager where managerAcc = #{managerAcc}
+    </select>
+
+</mapper>

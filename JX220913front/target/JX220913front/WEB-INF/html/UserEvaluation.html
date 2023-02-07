@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <!-- 引入 layui.js -->
+    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <script th:src="@{/js/jquery-1.12.4.min.js}"></script>
+    <style type="text/css">
+
+    </style>
+</head>
+<body>
+<table class="layui-table" style="width: 100%;line-height: 30px;"border="1" cellpadding="0" cellspacing="0">
+    <tr>
+        <th>用户名</th>
+        <th>评价时间</th>
+        <th>评价内容</th>
+    </tr>
+    <tbody id="evaTb"></tbody>
+</table>
+</body>
+<script>
+    //获取按钮点击跳转传递过来的数值
+    var managerAcc = localStorage.getItem("managerAcc");
+    //添加用户评价
+    $(function () {
+        $.ajax({
+            url: "evaluate/findEvaListByMAcc",
+            data: {"managerAcc":managerAcc},
+            async:false,
+            dataType: "json",
+            success:function (evaListByMAcc) {
+                var html="";
+                for (var i = 0;i <evaListByMAcc.length;i++){
+
+                    html+="<tr>"
+
+                    html+="<td>"
+                    html+=evaListByMAcc[i].userAcc
+                    html+="</td>"
+
+                    html+="<td>"
+                    html+=evaListByMAcc[i].evaluateTime
+                    html+="</td>"
+
+                    html+="<td>"
+                    html+=evaListByMAcc[i].evaluateContext
+                    html+="</td>"
+
+                    html+="</tr>"
+                }
+                $("#evaTb").html(html);
+            }
+        });
+    });
+</script>
+</html>

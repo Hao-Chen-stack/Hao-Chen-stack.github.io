@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TbluserMapper">
+
+    <select id="findUserList" resultType="com.cykj.bean.Tbluser">
+        select * from tbluser
+        <where>
+                and tbluser.userState!=2
+            <if test="tbluser.userAcc != null and tbluser.userAcc!= ''">
+                and userAcc like concat('%',#{tbluser.userAcc},'%')
+            </if>
+            <if test="tbluser.userName != null and tbluser.userName!= ''">
+                and userName like concat('%',#{tbluser.userName},'%')
+            </if>
+            <if test="tbluser.userState>=0">
+                and userState=#{tbluser.userState}
+            </if>
+            <if test="tbluser.userState==2">
+                and tbluser.userState!=2
+            </if>
+        </where>
+        limit #{page},#{size}
+    </select>
+
+    <select id="findUserCount" resultType="java.lang.Integer">
+        select count(*) from tbluser
+        <where>
+                and userState!=2
+            <if test="userAcc != null and userAcc!= ''">
+                and userAcc like concat('%',#{userAcc},'%')
+            </if>
+            <if test="userName != null and userName!= ''">
+                and userName like concat('%',#{userName},'%')
+            </if>
+            <if test="userState>=0">
+                and userState=#{userState}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateDelUser">
+        update tbluser set userState=2 where userId=#{userId}
+    </update>
+
+    <update id="rePwd">
+        update tbluser set userPwd='123456' where userId=#{userId}
+    </update>
+
+    <update id="onAndOffUser">
+            update tbluser
+            <if test="userState==0">
+                set userState = 1
+            </if>
+            <if test="userState==1">
+                set userState = 0
+            </if>
+            where userId=#{userId}
+    </update>
+
+    <select id="findUserNameById" resultType="com.cykj.bean.Tbluser">
+        select userName from tbluser where userId=#{userId}
+    </select>
+
+    <update id="updateUBalanceByUId">
+        update tbluser set userBalance =  (userBalance-(select price from tblmanager where managerAcc = #{managerAcc})) where userId = #{userId}
+    </update>
+
+    <select id="findUserBalanceByUId" resultType="java.lang.Double">
+        select userBalance from tbluser where userId = #{userId}
+    </select>
+
+</mapper>

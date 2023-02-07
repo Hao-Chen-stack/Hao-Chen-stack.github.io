@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<meta name="Generator" content="EditPlus®">
+		<meta name="Author" content="">
+		<meta name="Keywords" content="">
+		<meta name="Description" content="">
+		<title>首页</title>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/index.css}">
+		<script th:src="@{/js/jquery-1.12.4.min.js}"></script>
+	</head>
+	<script language="javascript" th:src="@{/js/province.js}" type="text/javascript" charset="utf-8"></script>
+	<script language="javascript" th:src="@{/js/imagebox.js}" type="text/javascript" charset="utf-8"></script>
+	<body onload='getProvince()'>
+		<div id="header">
+			<div id="header-top">
+				<table style="border-spacing: 20px;">
+					<tr>
+						<td>
+							<select id="province" onchange="chooseProvince(this)">
+								<option value="1">请选择省</option>
+							</select>
+							<select id="city" onchange="chooseCity(this)">
+								<option value="2">请选择市</option>
+							</select>
+							<select id="area">
+								<option value="3">请选择区</option>
+							</select>
+						</td>
+						<td><a href="login.html">你好，请登录</a></td>
+						<td><a href="register.html">免费注册</a></td>
+						<td><a href="">我的订单</a></td>
+						<td><a href="">我的京东</a></td>
+						<td><a href="">京东会员</a></td>
+						<td><a href="">企业采购</a></td>
+						<td><a href="">商家服务</a></td>
+						<td><a href="">网站导航</a></td>
+						<td><a href="">手机京东</a></td>
+						<td><a href="">网站无障碍</a></td>
+					</tr>
+				</table>
+			</div>
+			<div id="header-search">
+				<div class="box">
+					<input type="text" placeholder="请输入搜索内容" id="text">
+					<input type="image" th:src="@{/images/sou.png}" id="search">
+				</div>
+				<div>
+					<table style="border-spacing: 15px;">
+						<tr>
+							<td><img src="imgs/myshoppingcar.png" alt=""></td>
+							<td><a href="">京东超市</a></td>
+							<td><a href="">优惠券</a></td>
+							<td><a href="">秒杀</a></td>
+							<td><a href="">京东家电</a></td>
+							<td><a href="">京东生鲜</a></td>
+							<td><a href="">PLUS会员</a></td>
+							<td><a href="">进口好物</a></td>
+							<td><a href="">品牌闪购</a></td>
+							<td><a href="">拍卖</a></td>
+							<td><a href="">京东五金城</a></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div id="content">
+			<div id="bonner">
+				<div class="one">
+					<dl style="margin: 5px 30px 5px 30px;">
+						<dt><a href="">家用电器</a></dt>
+						<dt><a href="">手机</a>/<a href="">运营商</a>/<a href="">数码</a></dt>
+						<dt><a href="">电脑</a>/<a href="">办公</a></dt>
+						<dt><a href="">家居</a>/<a href="">家具</a>/<a href="">家装</a>/<a href="">厨具</a></dt>
+						<dt><a href="">男装</a>/<a href="">女装</a>/<a href="">童装</a>/<a href="">内衣</a></dt>
+						<dt><a href="">美妆</a>/<a href="">个护清洁</a>/<a href="">宠物</a></dt>
+						<dt><a href="">女鞋</a>/<a href="">箱包</a>/<a href="">钟表</a>/<a href="">珠宝</a></dt>
+						<dt><a href="">男鞋</a>/<a href="">运动</a>/<a href="">户外</a></dt>
+						<dt><a href="">房产</a>/<a href="">汽车</a>/<a href="">汽车用品</a></dt>
+						<dt><a href="">母婴</a>/<a href="">玩具乐器</a></dt>
+						<dt><a href="">食品</a>/<a href="">酒类</a>/<a href="">生鲜</a>/<a href="">特产</a></dt>
+						<dt><a href="">艺术</a>/<a href="">礼品鲜花</a>/<a href="">农资绿植</a></dt>
+						<dt><a href="">医药保健</a>/<a href="">计生情趣</a></dt>
+						<dt><a href="">图书</a>/<a href="">文娱</a>/<a href="">教育</a>/<a href="">电子书</a></dt>
+						<dt><a href="">机票</a>/<a href="">酒店</a>/<a href="">旅游</a>/<a href="">生活</a></dt>
+						<dt><a href="">众筹</a>/<a href="">白条</a>/<a href="">保险</a>/<a href="">企业金融</a></dt>
+					</dl>
+				</div>
+				<div class="three">
+					<img class="img-slide img1" src="imgs/imagebox1.png" alt="1">
+					<img class="img-slide img2" src="imgs/imagebox2.png" alt="2" style="display: none;">
+					<img class="img-slide img3" src="imgs/imagebox3.png" alt="3" style="display: none;">
+				</div>
+				<div class="one">
+					<div id="images">
+						<img src="imgs/imageboxright1.png" alt="">
+						<img src="imgs/imageboxright2.png" alt="">
+						<img src="imgs/imageboxright3.png" alt="">
+					</div>
+				</div>
+				<div class="one">
+					<div id="top">
+						<dl style="margin-left: 80px;">
+							<img src="imgs/dog.png" alt="">
+							<dt>Hi~欢迎逛京东!</dt>
+							<dt><a href="login.html">登录</a>|<a href="register.html">注册</a></dt>
+							<dt>新人福利 PLUS会员</dt>
+						</dl>
+					</div>
+					<hr>
+					<div id="center">
+						<dl>
+							<dt>京东快报</dt>
+							<dt style="background-color: pink;">
+								<font size="" color="red">HOT</font>
+							</dt>
+							<dt>最新</dt>
+							<dt style="background-color: pink;">
+								<font size="" color="red">HOT</font>
+							</dt>
+							<dt>最新</dt>
+						</dl>
+					</div>
+					<hr>
+					<div id="bottom">
+						<table>
+							<tr>
+								<td><img src="imgs/bottom1.png" alt=""></td>
+								<td><img src="imgs/bottom2.png" alt=""></td>
+								<td><img src="imgs/bottom3.png" alt=""></td>
+							</tr>
+							<tr>
+								<td><img src="imgs/bottom4.png" alt=""></td>
+								<td><img src="imgs/bottom5.png" alt=""></td>
+								<td><img src="imgs/bottom6.png" alt=""></td>
+							</tr>
+							<tr>
+								<td><img src="imgs/bottom7.png" alt=""></td>
+								<td><img src="imgs/bottom8.png" alt=""></td>
+								<td><img src="imgs/bottom9.png" alt=""></td>
+							</tr>
+							<tr>
+								<td><img src="imgs/bottom10.png" alt=""></td>
+								<td><img src="imgs/bottom11.png" alt=""></td>
+								<td><img src="imgs/bottom12.png" alt=""></td>
+							</tr>
+
+						</table>
+					</div>
+				</div>
+				<p style="clear: both;"></p>
+			</div>
+			<div id="bonner1">
+				<div class="one">
+
+					<img src="imgs/bonner1image1.png" alt="">
+				</div>
+				<div class="one">
+					<img src="imgs/bonner1image2.png" alt="">
+				</div>
+				<div class="one">
+					<img src="imgs/bonner1image3.png" alt="">
+				</div>
+				<div class="one">
+					<img src="imgs/bonner1image4.png" alt="">
+				</div>
+				<div class="one">
+					<img src="imgs/bonner1image5.png" alt="">
+				</div>
+				<p style="clear: both;"></p>
+			</div>
+			<div id="bonner2">
+				<!-- <img src="../imgs/tuijian.png" alt="" width="1250px"> -->
+<!--				<div class="one">-->
+<!--					<a href=""><img src="imgs/tuijian-1.png" alt="">	</a>-->
+<!--				</div>-->
+<!--				<div class="one">-->
+<!--					<a href="goods.html"><img src="imgs/tuijian-2.png" alt="">	</a>-->
+<!--				</div>-->
+<!--				<div class="one">-->
+<!--					<a href=""><img src="imgs/tuijian-3.png" alt=""></a>-->
+<!--				</div>-->
+<!--				<div class="one">-->
+<!--					<a href=""><img src="imgs/tuijian-4.png" alt=""></a>-->
+<!--				</div>-->
+<!--				<div class="one">-->
+<!--					<a href=""><img src="imgs/tuijian-5.png" alt=""></a>-->
+<!--				</div>-->
+<!--				<div class="one">-->
+<!--					<a href=""><img src="imgs/tuijian-6.png" alt=""></a>-->
+<!--				</div>-->
+<!--				<div class="one">-->
+<!--					<a href=""><img src="imgs/tuijian-7.png" alt=""></a>-->
+<!--				</div>-->
+<!--				<div class="one">-->
+<!--					<a href=""><img src="imgs/tuijian-8.png" alt=""></a>-->
+<!--				</div>-->
+<!--				<div class="one">-->
+<!--					<a href=""><img src="imgs/tuijian-9.png" alt=""></a>-->
+<!--				</div>-->
+<!--				<div class="one">-->
+<!--					<a href=""><img src="imgs/tuijian-10.png" alt=""></a>-->
+<!--				</div>-->
+<!--				<p style="clear: both;"></p>-->
+			</div>
+		</div>
+
+		<div id="right">
+			<table style="text-align: center; border-spacing: 8px;">
+				<tr>
+					<td>京东秒杀</td>
+				</tr>
+				<tr>
+					<td>特色优选</td>
+				</tr>
+				<tr>
+					<td>频道广场</td>
+				</tr>
+				<tr>
+					<td>为你推荐</td>
+				</tr>
+				<tr>
+					<td>客服</td>
+				</tr>
+				<tr>
+					<td>反馈</td>
+				</tr>
+			</table>
+		</div>
+		<div id="footer">
+			<div id="footer-1">
+				<img src="imgs/foot1.png" alt="">
+			</div>
+			<div id="footer-2">
+				<img src="imgs/foot2.png" alt="">
+			</div>
+			<div id="footer-3">
+				<img src="imgs/foot3.png" alt="">
+			</div>
+		</div>
+	</body>
+
+	<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+		var path = /*[[@{/}]]*/ '';
+		/*]]>*/
+	</script>　
+
+	<script>
+
+		$(function () {
+			//查询商品列表
+			findGoodsList();
+		});
+
+		function findGoodsList() {
+			$.ajax({
+				url:path+"goods/list",
+				dataType:"json",
+				success:function (goodsList) {
+					/**
+					 *
+					  <div class="one">-->
+					 	 <a href=""><img src="imgs/tuijian-1.png" alt=""></a>-->
+					  </div>-->
+					 */
+					var html='';
+					for (var i = 0; i <goodsList.length ; i++) {
+						html+='<div class="one">'
+						html+='<a href=""><img src="http://localhost:8080/jingDong_SSM_war_exploded/'+goodsList[i].goodsImage+'" alt=""></a>'
+						html+='</div>'
+					}
+					$("#bonner2").html(html)
+				}
+			})
+		}
+	</script>
+</html>

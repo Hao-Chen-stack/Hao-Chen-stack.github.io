@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.cykj.mapper.TblpowerMapper">
+
+
+    <select id="findRoleList" resultType="com.cykj.bean.Tblrole">
+        select * from tblrole
+    </select>
+    <select id="findDistributedPower" resultType="com.cykj.bean.Tblpower">
+        select * from tblpower where powerId in(select powerId from tblrolepower where roleId=#{roleId})
+    </select>
+    <select id="findUnDistributedPower" resultType="com.cykj.bean.Tblpower">
+        select * from tblpower where powerId not in(select powerId from tblrolepower where roleId=3) and parentId >0
+    </select>
+    <select id="findUnDistributedPower_parent" resultType="com.cykj.bean.Tblpower">
+        select * from tblpower where powerId in
+        <foreach collection="childList" item="power" separator="," open="(" close=")">
+            #{power.parentId}
+        </foreach>
+    </select>
+
+    <delete id="delPowerByRoleId">
+        delete from tblrolepower where roleId=#{roleId}
+    </delete>
+</mapper>

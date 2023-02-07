@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>预约列表</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="js/layui-v2.6.8/layui/css/layui.css">
+    <!-- 引入 layui.js -->
+    <script src="js/layui-v2.6.8/layui/layui.js"></script>
+    <script th:src="@{/js/jquery-1.12.4.min.js}"></script>
+	<style type="text/css">
+		.right {
+		    position: absolute;
+		    right: 0px;
+		    width: 300px;
+		    border: 3px solid #73AD21;
+		    padding: 10px;
+		}
+	</style>
+</head>
+<body>
+    <h1 style="text-align: center;">预约列表</h1>
+<!--    <div style="width: 80%;margin: auto">-->
+<!--    -->
+<!--    </div>-->
+<!--    <form id="searchFrom">-->
+<!--        <input type="hidden" name="page" id="page">-->
+<!--        <input type="hidden" name="size" id="size">-->
+<!--    </form>-->
+    <table class="layui-table" style="width: 100%;line-height: 30px;"border="1" cellpadding="0" cellspacing="0">
+		 <a style="margin-left: 1500px ;"  href="IWantAppointment" class="layui-btn layui-btn-primary layui-border-blue" >我要预约</a>
+		
+        <tr>
+            <th>预约日期</th>
+            <th>预约时间</th>
+            <th>心理咨询师</th>
+            <th>领域</th>
+            <th>状态</th>
+			<th>操作</th>
+        </tr>
+        <tbody id="tb"></tbody>
+    </table>
+
+<div style="text-align: center">
+	   <button id="prev" class="layui-btn layui-btn-warm">上一页</button>
+	    <span style="margin: 0px 30px 0px 30px" id="pageMsg"></span>
+	    <button id="next" class="layui-btn layui-btn-warm">下一页</button>
+<!--        <button id="reu" class="layui-btn layui-btn-warm">返回</button>-->
+    </div>
+</body>
+<script src="js/appointmentList.js"></script>
+</html>

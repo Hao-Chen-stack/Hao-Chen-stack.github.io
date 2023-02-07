@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户评估列表</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/layui-v2.6.8/layui/layui.js"></script>
+    <link href="js/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
+    <script th:src="@{/js/jquery-1.12.4.min.js}"></script>
+</head>
+<body>
+<h1 style="text-align: center">用户评估列表</h1>
+<h2>查询条件:</h2>
+<form id="searchFrom">
+    评估日期：<input type="date" name="startDate" id="startDate"/>至<input type="date" name="endDate" id="endDate"/>
+    得分：<input type="number" name="minScore" id="minScore">至<input type="number" name="maxScore" id="maxScore">
+    <button type="button" class="layui-btn layui-btn-warm" onclick="searchManager()">查询</button>
+</form>
+<table class="layui-table">
+    <tr>
+        <th>评估日期</th>
+        <th>用户</th>
+        <th>领域</th>
+        <th>得分</th>
+        <th>操作</th>
+    </tr>
+    <tbody id="tb"></tbody>
+</table>
+
+<div style="text-align: center">
+    <button id="prev" class="layui-btn layui-btn-warm">上一页</button>
+    <span style="margin: 0px 30px 0px 30px" id="pageMsg"></span>
+    <button id="next" class="layui-btn layui-btn-warm">下一页</button>
+</div>
+</body>
+<script>
+    //当前页数，默认从第一页开始
+    var page=1;
+    //每页显示的条数
+    var size=5;
+    //总页数
+    var pageSize;
+
+    //文档加载事件
+    $(function () {
+        findReportListBySomeCondition();
+    })
+
+    //按条件查询用户评估列表
+    function searchManager() {
+        page=1;
+        findReportListBySomeCondition();
+    }
+
+    //查询用户评估列表
+    function findReportListBySomeCondition() {
+        $.ajax({
+            url: "report/findReportListBySomeCondition",
+            data: $("#searchFrom").serialize() + "&page=" + page + "&size=" + size,
+            dataType: "json",
+            // async: false,
+            success:function (map) {
+                //更新当前页和总页数
+                var reportCounts = map.counts;
+                pageSize = reportCounts%size==0 ? reportCounts/size : parseInt(reportCounts/size)+1;
+                $("#pageMsg").html("第"+page+"页/共"+pageSize+"页")
+                var reportListBySomeCondition = map.data;
+                var html="";
+                for (var i = 0; i <reportListBySomeCondition.length ; i++) {
+                    html+="<tr>"
+
+                    html+="<td>"
+                    html+=reportListBySomeCondition[i].reportDate
+                    html+="</td>"
+
+                    html+="<td>"
+                    html+=reportListBySomeCondition[i].userName
+                    html+="</td>"
+
+                    html+="<td>"
+                    html+=reportListBySomeCondition[i].areaName
+                    html+="</td>"
+
+                    html+="<td>"
+                    html+=reportListBySomeCondition[i].paperScore
+                    html+="</td>"
+
+
+                    html+="<td>"
+                    html+="<button type='button' class=\"layui-btn layui-btn-normal\" onclick='toReportContext("+reportListBySomeCondition[i].reportId+")'>查看报告</button>"
+                    html+="</td>"
+
+                    html+="</tr>"
+                }
+
+                $("#tb").html(html);
+            }
+        })
+    }
+
+    //上一页
+    $("#prev").click(function () {
+        if (page>1){
+            page--;
+            findReportListBySomeCondition()
+        }else {
+            alert("已经是第一页")
+        }
+    })
+
+    //下一页
+    $("#next").click(function () {
+        if(page<pageSize){
+            page++;
+            findReportListBySomeCondition()
+        }else {
+            alert("已经是最后一页")
+        }
+
+    })
+
+    //跳转到评测报告界面
+    function toReportContext(reportId) {
+        //在跳转时将参数传递
+        $(location).attr('href', 'ReportContext?reportId='+reportId);
+    }
+
+</script>
+</html>

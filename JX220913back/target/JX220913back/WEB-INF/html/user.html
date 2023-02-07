@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>客户管理</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/layui-v2.6.8/layui/layui.js"></script>
+    <link href="js/layui-v2.6.8/layui/css/layui.css" rel="stylesheet">
+</head>
+<body>
+<h1>客户管理</h1>
+    <form id="searchFrom">
+        <input type="hidden" name="page" id="page">
+        <input type="hidden" name="size" id="size">
+
+        <input type="text" placeholder="用户账号" name="userAcc">
+        <input type="text" placeholder="用户名称" name="userName">
+        <select name="userState" id="userState">
+            <option value="-1">请选择状态</option>
+            <option value="0">禁用</option>
+            <option value="1">启用</option>
+        </select>
+        <button type="button" onclick="searchUser()">查询</button>
+    </form>
+    <table class="layui-table">
+        <tr>
+            <th>用户id</th>
+            <th>用户账号</th>
+            <th>用户密码</th>
+            <th>用户名字</th>
+            <th>性别</th>
+            <th>年龄</th>
+            <th>手机号</th>
+            <th>创建时间</th>
+            <th>状态</th>
+            <th>地址</th>
+            <th>余额</th>
+            <th>操作</th>
+        </tr>
+        <tbody id="tb"></tbody>
+    </table>
+
+    <div style="text-align: center">
+        <button id="prev">上一页</button>
+        <span style="margin: 0px 30px 0px 30px" id="pageMsg"></span>
+        <button id="next">下一页</button>
+    </div>
+</body>
+<script src="js/user.js"></script>
+</html>

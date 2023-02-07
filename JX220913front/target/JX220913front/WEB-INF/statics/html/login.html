@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>登录界面</title>
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <style>
+        #div1{
+            width: 500px;
+            height: 480px;
+            text-align: center;
+            margin: auto;
+            border: 2px solid black;
+
+        }
+        #btn1{
+            height: 45px;
+            width: 82px;
+            font-size: 20px;
+            background-color: red;
+            color: white ;
+            border: 0;
+        }
+        #btn2{
+            height: 45px;
+            width: 110px;
+            font-size: 20px;
+            background-color: blue;
+            color: white ;
+            border: 0;
+        }
+        #btn1:hover{
+            font-size: 22px;
+            cursor: pointer;
+
+        }
+        #btn2:hover{
+            font-size: 22px;
+            cursor: pointer;
+
+        }
+        a:hover{
+            cursor: pointer;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<form id="loginForm">
+<div id="div1">
+    <h1>欢迎登录心理咨询与诊断平台</h1>
+    <br>
+    用户名：<input style="height: 47px; width: 250px; " type="text" placeholder="请输入用户名" name="userAcc" id="userAcc" onblur="checkAcc(this)">
+    <span id="accMsg" style="font-size: 13px;color: red;display: none;"></span>
+    <br>
+    密&nbsp;&nbsp;&nbsp;码：<input style="height: 47px; width: 250px; " type="password" placeholder="请输入密码" name="userPwd" id="userPwd" onblur="checkPwd(this)">
+    <span id="pwdMsg" style="font-size: 13px;color: red;display: none;"></span>
+    <br>
+    验证码：<input style="height: 47px; width: 250px;" type="text" placeholder="请输入验证码" name="userCode" id="userCode" >
+    <br>
+    <img src="" alt="" style="width: 92px;height: 47px;;">
+    <label style="width: 30px;height: 47px;"><a onclick="changeCode()">看不清,换一张</a></label>
+    <br>
+    <button id="btn1" type="button" onclick="login()">登录</button>
+    &nbsp;&nbsp;&nbsp;
+    <button id="btn2" type="button">快速注册</button>
+</div>
+</form>
+</body>
+
+<script src="js/account.js"></script>
+<script src="js/userLogin.js"></script>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script th:src="@{js/jquery-1.12.4.min.js}"></script>
+    <style>
+        #rp{
+            width: 90%;
+            height: 800px;
+            border: 1px solid black;
+            margin: auto;
+        }
+        #rp>div{
+            float: left;
+            /* background-color: antiquewhite; */
+            width: 25%;
+            height: 100%;
+        }
+        ul{
+            list-style: none;
+        }
+        li{
+            font-size: 20px;
+            padding: 10px;
+        }
+        a{
+            text-decoration: none;
+            color: black;
+            cursor: pointer;
+        }
+        a:hover{
+            background-color: beige;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<h1 style="text-align: center;padding: 20px">权限管理</h1>
+<div id="rp">
+    <div style="background-color: beige;">
+        <ul id="role">
+<!--            <li>-->
+<!--                <a href="">管理员</a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="">超级管理员</a>-->
+<!--            </li>-->
+        </ul>
+    </div>
+    <div style="background-color: lightgray;">
+        <h1>已拥有权限：</h1>
+        <ul id="distributedPower">
+<!--            <li>-->
+<!--                <input type="checkbox">-->
+<!--                <a href="">系统管理</a>-->
+<!--                <ul>-->
+<!--                    <li>-->
+<!--                        <input type="checkbox">-->
+<!--                        <a href="">修改密码</a>-->
+<!--                    </li>-->
+<!--                    <li>-->
+<!--                        <input type="checkbox">-->
+<!--                        <a href="">删除用户</a>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </li>-->
+        </ul>
+    </div>
+    <div style="background-color: beige;">
+        <p>
+            <button onclick="removeAllPower()">移除所有权限</button>
+        </p>
+    </div>
+    <div style="background-color: lightgray;">
+        <h1>未拥有权限：</h1>
+        <ul id="undistributedPower"></ul>
+    </div>
+</div>
+</body>
+
+<script>
+    var roleId;
+    $(function () {
+        findRoleList();
+    })
+    //查询角色列表
+    function findRoleList() {
+        $.ajax({
+            url:"power/roleList",
+            dataType:"json",
+            success:function (roleList) {
+                for (var i = 0; i < roleList.length ; i++) {
+                    $("#role").append("<li><a roleId='"+roleList[i].roleId+"'>"+roleList[i].roleName+"</a></li>")
+                }
+            }
+        })
+
+    }
+
+    $(document).on("click","#role a",function () {
+        // alert("角色id:"+$(this).attr("roleId"))
+        roleId=$(this).attr("roleId");
+        findPowerList();
+    })
+
+    function findPowerList() {
+        $.ajax({
+            url: "power/powerList",
+            data:{"roleId":roleId},
+            dataType:"json",
+            success:function (map) {
+                var haveList = map.haveList;
+                var unHaveList = map.unHaveList;
+                $("#distributedPower").empty();
+                for (var i = 0; i < haveList.length ; i++) {
+                    if (haveList[i].parentId==0){
+                        $("#distributedPower").append("<li id='have"+haveList[i].powerId+"'><input type='checkbox'><a href=''>"+haveList[i].powerName+"</a><ul></ul></li>")
+                    }
+                }
+
+                for (var i = 0; i <haveList.length ; i++) {
+                    $("#have"+haveList[i].parentId+">ul").append("<li id='"+haveList[i].powerId+"'><input type='checkbox'><a href=''>"+haveList[i].powerName+"</a></li>")
+                }
+
+                $("#undistributedPower").empty();
+                for (var i = 0; i < unHaveList.length ; i++) {
+                    if (unHaveList[i].parentId==0){
+                        $("#undistributedPower").append("<li id='no"+unHaveList[i].powerId+"'><input type='checkbox'><a href=''>"+unHaveList[i].powerName+"</a><ul></ul></li>")
+                    }
+                }
+
+                for (var i = 0; i <unHaveList.length ; i++) {
+                    $("#no"+unHaveList[i].parentId+">ul").append("<li id='"+unHaveList[i].powerId+"'><input type='checkbox'><a href=''>"+unHaveList[i].powerName+"</a></li>")
+                }
+            }
+
+
+        })
+    }
+
+    function removeAllPower() {
+        $.ajax({
+            url:"power/deleteByRoleId",
+            data:{"roleId":roleId},
+            success:function (i) {
+                alert(i);
+                findPowerList()
+            }
+        })
+    }
+</script>
+</html>
